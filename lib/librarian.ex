@@ -42,14 +42,17 @@ defmodule BibleEx.Librarian do
 
   def get_book_names(book: book) do
     found_book =
-      case Useful.typeof(book) do
+      case BibleEx.typeof(book) do
         "binary" ->
           find_book_number(book: book)
 
-        "integer" ->
+        "number" ->
           book
 
         "nil" ->
+          nil
+
+        "atom" ->
           nil
       end
 
@@ -80,11 +83,11 @@ defmodule BibleEx.Librarian do
 
   def get_last_verse_number(book: book, chapter: chapter) do
     found_book =
-      case Useful.typeof(book) do
+      case BibleEx.typeof(book) do
         "binary" ->
           find_book_number(book: book)
 
-        "integer" ->
+        "number" ->
           book
       end
 
@@ -138,11 +141,11 @@ defmodule BibleEx.Librarian do
 
   def get_last_chapter_number(book: book) do
     found_book =
-      case Useful.typeof(book) do
+      case BibleEx.typeof(book) do
         "binary" ->
           find_book_number(book: book)
 
-        "integer" ->
+        "number" ->
           book
       end
 
@@ -159,11 +162,11 @@ defmodule BibleEx.Librarian do
 
   def get_last_verse(book: book, chapter: chapter) do
     book_number =
-      case Useful.typeof(book) do
+      case BibleEx.typeof(book) do
         "binary" ->
           find_book_number(book: book)
 
-        "integer" ->
+        "number" ->
           book
       end
 
@@ -210,11 +213,11 @@ defmodule BibleEx.Librarian do
     dbg(chapter)
 
     book_number =
-      case Useful.typeof(book) do
+      case BibleEx.typeof(book) do
         "binary" ->
           find_book_number(book: book)
 
-        "integer" ->
+        "number" ->
           book
       end
 
@@ -284,11 +287,11 @@ defmodule BibleEx.Librarian do
 
   def get_last_chapter(book: book) do
     found_book =
-      case Useful.typeof(book) do
+      case BibleEx.typeof(book) do
         "binary" ->
           find_book_number(book: book)
 
-        "integer" ->
+        "number" ->
           book
       end
 
@@ -318,11 +321,11 @@ defmodule BibleEx.Librarian do
 
   def get_chapters(book: book, start_chapter: start_chapter, end_chapter: end_chapter) do
     found_book =
-      case Useful.typeof(book) do
+      case BibleEx.typeof(book) do
         "binary" ->
           find_book_number(book: book)
 
-        "integer" ->
+        "number" ->
           book
       end
 
@@ -525,11 +528,11 @@ defmodule BibleEx.Librarian do
     dbg(verified)
 
     found_book =
-      case Useful.typeof(book) do
+      case BibleEx.typeof(book) do
         "binary" ->
           find_book_number(book: book)
 
-        "integer" ->
+        "number" ->
           book
       end
 
@@ -557,11 +560,11 @@ defmodule BibleEx.Librarian do
     dbg(verified)
 
     found_book =
-      case Useful.typeof(book) do
+      case BibleEx.typeof(book) do
         "binary" ->
           find_book_number(book: book)
 
-        "integer" ->
+        "number" ->
           book
       end
 
@@ -616,11 +619,11 @@ defmodule BibleEx.Librarian do
     dbg(verified)
 
     found_book =
-      case Useful.typeof(book) do
+      case BibleEx.typeof(book) do
         "binary" ->
           find_book_number(book: book)
 
-        "integer" ->
+        "number" ->
           book
       end
 
@@ -706,11 +709,11 @@ defmodule BibleEx.Librarian do
     dbg(verified)
 
     found_book =
-      case Useful.typeof(book) do
+      case BibleEx.typeof(book) do
         "binary" ->
           find_book_number(book: book)
 
-        "integer" ->
+        "number" ->
           book
       end
 
@@ -818,11 +821,11 @@ defmodule BibleEx.Librarian do
     dbg(verified)
 
     found_book =
-      case Useful.typeof(book) do
+      case BibleEx.typeof(book) do
         "binary" ->
           find_book_number(book: book)
 
-        "integer" ->
+        "number" ->
           book
       end
 
