@@ -170,7 +170,7 @@ defmodule BibleEx.Reference do
       scn..ecn
       |> Enum.to_list()
 
-    dbg(chapter_list)
+
 
     verse_collection =
       Enum.map(chapter_list, fn x ->

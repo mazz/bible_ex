@@ -9,23 +9,23 @@ defmodule BibleEx.Librarian do
 
     cond do
       book_lower == "" ->
-        dbg(nil)
+
         nil
 
       BibleData.books()[book_lower] ->
-        dbg(book_lower)
+
         BibleData.books()[book_lower]
 
       BibleData.osis_books()[book_lower] ->
-        dbg(book_lower)
+
         BibleData.osis_books()[book_lower]
 
       BibleData.shortened_books()[book_lower] ->
-        dbg(book_lower)
+
         BibleData.shortened_books()[book_lower]
 
       BibleData.variants()[book_lower] ->
-        dbg(book_lower)
+
         BibleData.variants()[book_lower]
 
       true ->
@@ -96,7 +96,7 @@ defmodule BibleEx.Librarian do
           book
       end
 
-    # dbg(found_book)
+
 
     case found_book do
       nil ->
@@ -164,7 +164,7 @@ defmodule BibleEx.Librarian do
 
     book_names = get_book_names(book: book)
 
-    dbg(book_number)
+
 
     if is_nil(book_number) do
       nil
@@ -188,7 +188,7 @@ defmodule BibleEx.Librarian do
   end
 
   def get_verses(book: book, chapter: chapter, start_verse: start_verse, end_verse: end_verse) do
-    dbg(chapter)
+
 
     book_number =
       case BibleEx.typeof(book) do
@@ -208,7 +208,7 @@ defmodule BibleEx.Librarian do
 
         chapter ->
           # check if chapter is out of range
-          dbg(chapter)
+
 
           start_verse =
             if !is_nil(start_verse) do
@@ -231,7 +231,7 @@ defmodule BibleEx.Librarian do
               nil
 
             false ->
-              dbg(end_verse)
+
 
               case end_verse do
                 nil ->
@@ -311,7 +311,7 @@ defmodule BibleEx.Librarian do
     else
       book_names = get_book_names(book: book)
 
-      dbg(found_book)
+
 
       if is_nil(found_book) do
         nil
@@ -357,8 +357,8 @@ defmodule BibleEx.Librarian do
                     end_chapter
                   end
 
-                dbg(start_chapter)
-                dbg(end_chapter)
+
+
 
                 Enum.map(start_chapter..end_chapter, fn x ->
                   BibleEx.Chapter.new(book: book_name, chapter_number: x)
@@ -466,10 +466,10 @@ defmodule BibleEx.Librarian do
   end
 
   def verify_reference(book: book) when not is_nil(book) do
-    # dbg(book)
+
     verified = true
 
-    dbg(verified)
+
 
     found_book =
       case BibleEx.typeof(book) do
@@ -491,10 +491,10 @@ defmodule BibleEx.Librarian do
   end
 
   def verify_reference(book: book, start_chapter: start_chapter) when not is_nil(book) do
-    # dbg(book)
+
     verified = true
 
-    dbg(verified)
+
 
     found_book =
       case BibleEx.typeof(book) do
@@ -512,7 +512,7 @@ defmodule BibleEx.Librarian do
         verified
       end
 
-    # dbg(verified)
+
 
     ## if book is not verified at this point, short-circuit
 
@@ -520,7 +520,7 @@ defmodule BibleEx.Librarian do
       case verified do
         true ->
           if !is_nil(start_chapter) do
-            # dbg(found_book)
+
             books_last_verse = length(BibleData.last_verse() |> Enum.at(found_book - 1))
 
             if !(start_chapter > 0 and books_last_verse >= start_chapter) do
@@ -536,17 +536,17 @@ defmodule BibleEx.Librarian do
           false
       end
 
-    # dbg(verified)
+
 
     verified
   end
 
   def verify_reference(book: book, start_chapter: start_chapter, start_verse: start_verse)
       when not is_nil(book) do
-    # dbg(book)
+
     verified = true
 
-    dbg(verified)
+
 
     found_book =
       case BibleEx.typeof(book) do
@@ -564,7 +564,7 @@ defmodule BibleEx.Librarian do
         verified
       end
 
-    # dbg(verified)
+
 
     ## if book is not verified at this point, short-circuit
 
@@ -572,7 +572,7 @@ defmodule BibleEx.Librarian do
       case verified do
         true ->
           if !is_nil(start_chapter) do
-            # dbg(found_book)
+
             books_last_verse = length(BibleData.last_verse() |> Enum.at(found_book - 1))
 
             if !(start_chapter > 0 and books_last_verse >= start_chapter) do
@@ -588,7 +588,7 @@ defmodule BibleEx.Librarian do
           false
       end
 
-    # dbg(verified)
+
 
     # book is not in bible
     verified =
@@ -618,17 +618,17 @@ defmodule BibleEx.Librarian do
         end
       end
 
-    # dbg(verified)
+
 
     verified
   end
 
   def verify_reference(book: book, start_chapter: start_chapter, end_verse: end_verse)
       when not is_nil(book) do
-    # dbg(book)
+
     verified = true
 
-    dbg(verified)
+
 
     found_book =
       case BibleEx.typeof(book) do
@@ -646,7 +646,7 @@ defmodule BibleEx.Librarian do
         verified
       end
 
-    # dbg(verified)
+
 
     ## if book is not verified at this point, short-circuit
 
@@ -654,7 +654,7 @@ defmodule BibleEx.Librarian do
       case verified do
         true ->
           if !is_nil(start_chapter) do
-            # dbg(found_book)
+
             books_last_verse = length(BibleData.last_verse() |> Enum.at(found_book - 1))
 
             if !(start_chapter > 0 and books_last_verse >= start_chapter) do
@@ -670,42 +670,42 @@ defmodule BibleEx.Librarian do
           false
       end
 
-    # dbg(verified)
+
 
     verified =
       case !is_nil(end_verse) do
         true ->
-          # dbg(verified)
+
 
           very_last_verse =
             BibleData.last_verse()
             |> Enum.at(found_book - 1)
             |> Enum.at(start_chapter - 1)
 
-          # dbg(very_last_verse)
-          # dbg(end_verse)
+
+
 
           if end_verse <= 0 or very_last_verse < end_verse do
-            # dbg(verified)
+
             false
           else
-            # dbg(verified)
+
             # verified
             if is_nil(start_chapter) and is_nil(end_verse) do
-              # dbg(verified)
+
               false
             else
-              # dbg(verified)
+
               verified
             end
           end
 
         false ->
-          # dbg(verified)
+
           verified
       end
 
-    # dbg(verified)
+
 
     verified
   end
@@ -729,11 +729,11 @@ defmodule BibleEx.Librarian do
         end_verse: end_verse
       )
       when not is_nil(book) do
-    # dbg(book)
-    # dbg(start_chapter)
+
+
     verified = true
 
-    dbg(verified)
+
 
     found_book =
       case BibleEx.typeof(book) do
@@ -778,7 +778,7 @@ defmodule BibleEx.Librarian do
           end
         end
 
-        dbg(verified)
+
 
         verified =
           case !is_nil(start_verse) do
@@ -788,7 +788,7 @@ defmodule BibleEx.Librarian do
                 |> Enum.at(found_book - 1)
                 |> Enum.at(start_chapter - 1)
 
-              # dbg(books_last_verse_books_start_chapter)
+
 
               if !(start_verse > 0 and books_last_verse_books_start_chapter >= start_verse) do
                 false
@@ -825,46 +825,46 @@ defmodule BibleEx.Librarian do
               verified
           end
 
-        dbg(verified)
+
 
         verified =
           case !is_nil(end_verse) do
             true ->
-              dbg(verified)
+
 
               case is_nil(end_chapter) do
                 true ->
-                  dbg(verified)
+
                   false
 
                 false ->
-                  dbg(verified)
+
 
                   very_last_verse =
                     BibleData.last_verse()
                     |> Enum.at(found_book - 1)
                     |> Enum.at(end_chapter - 1)
 
-                  dbg(very_last_verse)
+
 
                   if end_verse > 0 and
                        very_last_verse >= end_verse do
-                    dbg(verified)
+
                     verified
                   else
-                    dbg(verified)
+
                     # verified
                     if is_nil(end_chapter) and is_nil(start_verse) do
-                      dbg(verified)
+
                       false
                     else
-                      dbg(verified)
+
 
                       if end_verse < start_verse do
-                        dbg(verified)
+
                         false
                       else
-                        dbg(verified)
+
                         verified
                       end
 
@@ -874,14 +874,14 @@ defmodule BibleEx.Librarian do
               end
 
             false ->
-              dbg(verified)
+
               verified
           end
 
         verified
       end
 
-    dbg(verified)
+
 
     verified
   end
@@ -891,7 +891,7 @@ defmodule BibleEx.Librarian do
   end
 
   def create_reference_string(book: book, start_chapter: start_chapter) do
-    # dbg(book)
+
     reference = ""
 
     reference =
@@ -907,31 +907,31 @@ defmodule BibleEx.Librarian do
   end
 
   def create_reference_string(book: book, start_chapter: start_chapter, start_verse: start_verse) do
-    # dbg(book)
+
     reference = ""
 
     reference =
       case !is_nil(book) and !is_nil(start_chapter) do
         true ->
-          # dbg(reference)
+
           reference = reference <> book <> " #{start_chapter}"
-          # dbg(reference)
+
 
           case !is_nil(start_verse) do
             true ->
-              # dbg(reference)
+
               reference <> ":#{start_verse}"
 
-            # dbg(reference)
+
 
             false ->
-              # dbg(reference)
+
               reference
-              # dbg(reference)
+
           end
 
         false ->
-          # dbg(reference)
+
           reference
       end
 
@@ -944,22 +944,22 @@ defmodule BibleEx.Librarian do
         start_verse: start_verse,
         end_chapter: end_chapter
       ) do
-    # dbg(book)
+
     reference = ""
 
     reference =
       case !is_nil(book) and !is_nil(start_chapter) do
         true ->
-          # dbg(reference)
+
           reference = reference <> book <> " #{start_chapter}"
-          # dbg(reference)
+
 
           if !is_nil(start_verse) and !is_nil(end_chapter) and end_chapter != start_chapter do
             # true ->
-            # dbg(reference)
+
             reference = reference <> ":#{start_verse}"
             reference = reference <> " - #{end_chapter}"
-            # dbg(reference)
+
 
             end_chapter_last_verse = get_last_verse_number(book: book, chapter: end_chapter)
 
@@ -974,21 +974,21 @@ defmodule BibleEx.Librarian do
           else
             reference =
               if !is_nil(end_chapter) and end_chapter != start_chapter do
-                # dbg(reference)
+
                 reference = reference <> "-#{end_chapter}"
-                # # dbg(reference)
+
                 reference
               else
-                # dbg(reference)
+
                 reference
               end
 
-            # dbg(reference)
+
             reference
           end
 
         false ->
-          # dbg(reference)
+
           reference
       end
 
@@ -1002,23 +1002,23 @@ defmodule BibleEx.Librarian do
         end_chapter: end_chapter,
         end_verse: end_verse
       ) do
-    # dbg(book)
+
 
     reference = ""
 
     reference =
       case !is_nil(book) and !is_nil(start_chapter) do
         true ->
-          dbg(reference)
+
           reference = reference <> book <> " #{start_chapter}"
-          dbg(reference)
+
 
           if !is_nil(start_verse) and !is_nil(end_chapter) and end_chapter != start_chapter do
             # true ->
-            dbg(reference)
+
             reference = reference <> ":#{start_verse}"
             reference = reference <> " - #{end_chapter}"
-            dbg(reference)
+
 
             if !is_nil(end_verse) do
               reference = reference <> ":#{end_verse}"
@@ -1039,52 +1039,52 @@ defmodule BibleEx.Librarian do
             reference =
               if !is_nil(end_verse) and is_nil(start_verse) do
                 reference = reference <> ":1"
-                dbg(reference)
+
                 reference
               else
                 if !is_nil(start_verse) do
                   reference = reference <> ":#{start_verse}"
-                  dbg(reference)
+
                   reference
                 else
-                  dbg(reference)
+
                   reference
                 end
               end
 
             reference =
               if !is_nil(end_chapter) do
-                dbg(reference)
-                dbg(start_chapter)
-                dbg(start_verse)
-                dbg(end_chapter)
-                dbg(end_verse)
+
+
+
+
+
 
                 reference =
                   if is_nil(start_verse) and is_nil(end_verse) do
                     # when only rendering chapter range
-                    dbg(reference)
+
 
                     # when it's the same chapter, do not show range
                     reference =
                       if start_chapter != end_chapter do
-                        dbg(reference)
+
                         reference <> "-#{end_chapter}"
                       else
-                        dbg(reference)
+
                         reference
                       end
 
-                    dbg(reference)
+
                     reference
                   else
                     # when rendering chapter:verse - chapter:verse range
-                    dbg(reference)
+
 
                     if start_chapter != end_chapter do
                       reference <> " - #{end_chapter}"
                     else
-                      dbg(reference)
+
                       reference
                     end
 
@@ -1093,24 +1093,24 @@ defmodule BibleEx.Librarian do
 
                 reference
               else
-                dbg(reference)
+
                 reference
               end
 
             reference =
               if !is_nil(end_verse) do
-                dbg(reference)
-                dbg(start_chapter)
-                dbg(start_verse)
-                dbg(end_chapter)
-                dbg(end_verse)
+
+
+
+
+
 
                 reference =
                   if !is_nil(start_verse) do
-                    dbg(reference)
+
                     reference <> "-#{end_verse}"
                   else
-                    dbg(reference)
+
 
                     if !is_nil(end_chapter) do
                       reference <> " - #{end_chapter}:#{end_verse}"
@@ -1119,36 +1119,36 @@ defmodule BibleEx.Librarian do
                     end
                   end
 
-                dbg(reference)
+
                 # reference = reference <> ":1"
                 reference
               else
-                dbg(reference)
+
                 reference
               end
 
-            dbg(reference)
+
             reference
           end
 
         false ->
-          dbg(reference)
-          dbg(book)
-          dbg(start_chapter)
-          dbg(start_verse)
-          dbg(end_chapter)
-          dbg(end_verse)
+
+
+
+
+
+
 
           reference =
             if is_nil(start_chapter) and is_nil(start_verse) do
-              dbg(reference)
+
               book
             else
-              dbg(reference)
+
               reference
             end
 
-          dbg(reference)
+
           reference
       end
 

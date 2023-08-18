@@ -9,21 +9,21 @@ defmodule BibleEx.RefParser do
         x
       end)
 
-    # dbg(indexes)
-    dbg(books_matched)
+
+
 
     Enum.map(books_matched, fn x ->
-      dbg(x)
+
 
       cond do
         # book name only i.e. ["genesis ", "genesis"]
         length(x) == 2 and String.trim(Enum.at(x, 0)) == Enum.at(x, 1) ->
-          dbg(x)
+
           Reference.new(book: String.trim(Enum.at(x, 0)))
 
         # book with chapter only i.e. ["Judges 19", "Judges", "19"]
         length(x) == 3 ->
-          dbg(x)
+
 
           Reference.new(
             book: String.trim(Enum.at(x, 1)),
@@ -39,7 +39,7 @@ defmodule BibleEx.RefParser do
         # NOTE: in elixir `James 1 - 2` generates ["james 1 - 2", "james", "1", "", "2"]
 
         length(x) == 4 ->
-          dbg(x)
+
 
           # book with chapter and verse i.e. ["Jn 3:16", "Jn", "3", "16"]
           Reference.new(
@@ -55,14 +55,14 @@ defmodule BibleEx.RefParser do
         # elixir  ["John 4:5-10", "John", "4", "5", "10"]
 
         length(x) == 5 ->
-          dbg(x)
+
           ref = String.trim(Enum.at(x, 0))
           # chapter-only reference -- also covers `em-dash` case
           # # NOTE: in elixir `James 1 - 2` generates ["james 1 - 2", "james", "1", "", "2"]
 
           cond do
             String.contains?(ref, ":") ->
-              dbg(x)
+
 
               Reference.new(
                 book: String.trim(Enum.at(x, 1)),
@@ -74,7 +74,7 @@ defmodule BibleEx.RefParser do
 
             String.contains?(ref, ".") ->
               # ["James 1.2 -  2", "James", "1", "2", "2"]
-              dbg(x)
+
 
               Reference.new(
                 book: String.trim(Enum.at(x, 1)),
@@ -85,7 +85,7 @@ defmodule BibleEx.RefParser do
               )
 
             String.contains?(ref, "-") or String.contains?(ref, "—") ->
-              dbg(x)
+
 
               Reference.new(
                 book: String.trim(Enum.at(x, 1)),
@@ -97,7 +97,7 @@ defmodule BibleEx.RefParser do
 
             true ->
               # should never get here?
-              dbg(x)
+
 
               Reference.new(
                 book: String.trim(Enum.at(x, 1)),
@@ -110,7 +110,7 @@ defmodule BibleEx.RefParser do
 
         length(x) == 6 ->
           # A reference that spans multiple chapters. i.e. ["John 3:16-4:3", "John", "3", "16", "4", "3"]
-          dbg(x)
+
 
           Reference.new(
             book: String.trim(Enum.at(x, 1)),
@@ -125,7 +125,7 @@ defmodule BibleEx.RefParser do
       end
     end)
 
-    # dbg(references)
+
   end
 
   def full_regex() do
@@ -136,21 +136,21 @@ defmodule BibleEx.RefParser do
       |> List.flatten()
 
     variants = Map.keys(BibleData.variants())
-    # dbg(variants)
+
 
     all_searchable = all_book_names ++ variants
-    # dbg(all_searchable)
+
 
     reg_books = Enum.join(all_searchable, "\\b|\\b")
 
-    # dbg(reg_books)
+
 
     {:ok, regex} =
       Regex.compile("(\\b#{reg_books}\\b) *(\\d+)?[ :.]*(\\d+)?[— -]*(\\d+)?[ :.]*(\\d+)?", [
         :caseless
       ])
 
-    # dbg(regex)
+
 
     regex
   end
