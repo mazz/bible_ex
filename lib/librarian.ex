@@ -877,6 +877,8 @@ defmodule BibleEx.Librarian do
               dbg(verified)
               verified
           end
+
+        verified
       end
 
     dbg(verified)
