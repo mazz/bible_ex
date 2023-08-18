@@ -253,10 +253,10 @@ defmodule BibleEx.DataTest do
     assert genesis_book.book == "Genesis"
     assert genesis_book.start_chapter_number == 1
     assert genesis_book.start_verse_number == 1
-    assert genesis_book.end_chapter_number == 1
-    assert genesis_book.end_verse_number == 31
+    assert genesis_book.end_chapter_number == 50
+    assert genesis_book.end_verse_number == 26
     assert genesis_book.reference == "Genesis"
-    assert genesis_book.reference_type == :chapter
+    assert genesis_book.reference_type == :chapter_range
     assert genesis_book.is_valid == true
 
     genesis_ref_not_valid =

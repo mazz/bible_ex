@@ -98,14 +98,22 @@ defmodule BibleEx.Reference do
       if !is_nil(end_chapter) do
         BibleEx.Chapter.new(book: bname, chapter_number: end_chapter)
       else
-        sc
+        if !is_nil(start_chapter) do
+          BibleEx.Chapter.new(book: bname, chapter_number: start_chapter)
+        else
+          BibleEx.Chapter.new(book: bname, chapter_number: end_chapter)
+        end
       end
 
     ecn =
       if !is_nil(end_chapter) do
         end_chapter
       else
-        scn
+        if !is_nil(start_chapter) do
+          scn
+        else
+          BibleEx.Librarian.get_last_chapter_number(book: bname)
+        end
       end
 
     sv =
