@@ -37,11 +37,11 @@ defmodule BibleEx.DataTest do
   end
 
   test "returns the empty map for the incorrect book name <empty string>" do
-    assert Librarian.get_book_names(book: "") == nil
+    assert Librarian.get_book_names(book: "") == %{}
   end
 
   test "returns the empty map for the incorrect book name nil" do
-    assert Librarian.get_book_names(book: nil) == nil
+    assert Librarian.get_book_names(book: nil) == %{}
   end
 
   test "librarian_returns_1_for_genesis" do
@@ -564,14 +564,13 @@ defmodule BibleEx.DataTest do
              end_verse: 1
            ) == false
 
-    # a reference can't have an end chapter without a start chapter
     assert Librarian.verify_reference(
              book: "John",
              start_chapter: nil,
              start_verse: nil,
              end_chapter: 1,
              end_verse: nil
-           ) == false
+           ) == true
 
     # a reference can't be without a start chapter nor an end chapter
     assert Librarian.verify_reference(

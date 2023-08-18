@@ -20,7 +20,10 @@ defmodule BibleEx.Reference do
             end_verse_number: nil,
             is_valid: false,
             chapters: [],
-            verses: []
+            verses: [],
+            osis: nil,
+            abbr: nil,
+            short: nil
 
   def new(book: book) do
     new(book: book, start_chapter: nil, start_verse: nil, end_chapter: nil, end_verse: nil)
@@ -195,9 +198,14 @@ defmodule BibleEx.Reference do
         )
       end)
 
+    book_names = Librarian.get_book_names(book: bname)
+    osis_book = Map.get(Librarian.get_book_names(book: bname), :osis, nil)
+    abbr_book = Map.get(Librarian.get_book_names(book: bname), :abbr, nil)
+    short_book = Map.get(Librarian.get_book_names(book: bname), :short, nil)
+
     %__MODULE__{
       book: bname,
-      book_names: Librarian.get_book_names(book: bname),
+      book_names: book_names,
       book_number: Librarian.find_book_number(book: bname),
       reference:
         Librarian.create_reference_string(
@@ -232,7 +240,10 @@ defmodule BibleEx.Reference do
           end_verse: end_verse
         ),
       chapters: chapters,
-      verses: List.flatten(verse_collection)
+      verses: List.flatten(verse_collection),
+      osis: osis_book,
+      abbr: abbr_book,
+      short: short_book
     }
   end
 
