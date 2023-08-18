@@ -98,12 +98,9 @@ defmodule BibleEx.Librarian do
         nil
 
       _found_book_not_nil ->
-        # BibleData.lastVerse[foundBook - 1][foundChapter - 1];
-
         found_chapter =
           case chapter do
             nil ->
-              # BibleData.lastVerse[foundBook - 1].count;
               length(Enum.at(BibleData.last_verse(), found_book - 1))
 
             found ->
@@ -119,25 +116,6 @@ defmodule BibleEx.Librarian do
         end
     end
   end
-
-  # /// Returns the number for the last chapter within a book.
-  # internal static func getLastChapterNumber(book: Any) -> Int? {
-  #     var foundBook: Int?
-  #     if (book is String) {
-  #         if let book = book as? String {
-  #             foundBook = findBookNumber(book: book);
-  #         }
-  #     }
-  #     if let foundBook = foundBook {
-  #         if (foundBook > BibleData.lastVerse.count) {
-  #             return nil
-  #         } else {
-  #             return BibleData.lastVerse[foundBook - 1].count
-  #         }
-  #     } else {
-  #         return nil
-  #     }
-  # }
 
   def get_last_chapter_number(book: book) do
     found_book =
@@ -170,10 +148,6 @@ defmodule BibleEx.Librarian do
           book
       end
 
-    # book_names = get_book_names(book: book_number)
-
-    # book_name = book_names.name
-
     book_chapter =
       case chapter do
         nil ->
@@ -196,13 +170,6 @@ defmodule BibleEx.Librarian do
           verse_number: get_last_verse_number(book: book_number, chapter: book_chapter)
         )
     end
-
-    # verse =
-    #   if Enum.at(BibleData.last_verse(), book_number - 1) < book_chapter || book_chapter < 1 do
-    #     BibleEx.Verse.new(book, book_chapter, 1)
-    #   else
-    #     1
-    #   end
   end
 
   def get_verses(book: book, chapter: chapter) do
@@ -250,11 +217,6 @@ defmodule BibleEx.Librarian do
             nil
 
           false ->
-            # very_last_verse =
-            #   BibleData.last_verse()
-            #   |> Enum.at(book_number - 1)
-            #   |> Enum.at(chapter - 1)
-
             dbg(end_verse)
 
             case end_verse do
@@ -356,7 +318,6 @@ defmodule BibleEx.Librarian do
               end_chapter =
                 if is_nil(end_chapter) do
                   start_chapter
-                  # length(Enum.at(BibleData.last_verse(), found_book - 1))
                 else
                   end_chapter
                 end
@@ -379,15 +340,10 @@ defmodule BibleEx.Librarian do
               dbg(start_chapter)
               dbg(end_chapter)
 
-              # if !is_nil(start_chapter) and !is_nil(end_chapter) do
               Enum.map(start_chapter..end_chapter, fn x ->
                 BibleEx.Chapter.new(book: book_name, chapter_number: x)
               end)
           end
-
-          # else
-          #   nil
-          # end
       end
     end
   end
@@ -503,13 +459,6 @@ defmodule BibleEx.Librarian do
           book
       end
 
-    # dbg(found_book)
-    # if (!(foundBook > 0 && BibleData.lastVerse.count >= foundBook)) {
-    #   return false;
-    # }
-
-    # dbg(verified)
-
     verified =
       if !(found_book > 0 and length(BibleData.last_verse()) >= found_book) do
         false
@@ -534,13 +483,6 @@ defmodule BibleEx.Librarian do
         "number" ->
           book
       end
-
-    # dbg(found_book)
-    # if (!(foundBook > 0 && BibleData.lastVerse.count >= foundBook)) {
-    #   return false;
-    # }
-
-    # dbg(verified)
 
     verified =
       if !(found_book > 0 and length(BibleData.last_verse()) >= found_book) do
@@ -594,13 +536,6 @@ defmodule BibleEx.Librarian do
           book
       end
 
-    # dbg(found_book)
-    # if (!(foundBook > 0 && BibleData.lastVerse.count >= foundBook)) {
-    #   return false;
-    # }
-
-    # dbg(verified)
-
     verified =
       if !(found_book > 0 and length(BibleData.last_verse()) >= found_book) do
         false
@@ -637,12 +572,6 @@ defmodule BibleEx.Librarian do
     verified =
       case !is_nil(start_verse) do
         true ->
-          # book_list =
-          #   BibleData.last_verse()
-          #   |> Enum.at(found_book - 1)
-
-          # dbg(book_list)
-
           if !is_nil(start_chapter) do
             books_last_verse_books_start_chapter =
               BibleData.last_verse()
@@ -683,13 +612,6 @@ defmodule BibleEx.Librarian do
         "number" ->
           book
       end
-
-    # dbg(found_book)
-    # if (!(foundBook > 0 && BibleData.lastVerse.count >= foundBook)) {
-    #   return false;
-    # }
-
-    # dbg(verified)
 
     verified =
       if !(found_book > 0 and length(BibleData.last_verse()) >= found_book) do
@@ -796,39 +718,12 @@ defmodule BibleEx.Librarian do
           book
       end
 
-    # dbg(found_book)
-    # if (!(foundBook > 0 && BibleData.lastVerse.count >= foundBook)) {
-    #   return false;
-    # }
-
-    # dbg(verified)
-
     verified =
       if !(found_book < 1 or (found_book > 0 and length(BibleData.last_verse()) >= found_book)) do
         false
       else
         verified
       end
-
-    # dbg(verified)
-
-    # if (startChapter != nil) {
-    #     if let startChapter = startChapter {
-    #         if (!(startChapter > 0 &&
-    #               BibleData.lastVerse[foundBook - 1].count >= startChapter)) {
-    #             return false;
-    #         }
-    #         if mutEndChapter != nil {
-    #             if let mutEndChapter = mutEndChapter {
-    #                 if startChapter > mutEndChapter {
-    #                     return false
-    #                 }
-    #             }
-    #         }
-    #     }
-    # } else if (mutEndChapter != nil || endVerse != nil) {
-    #     return false;
-    # }
 
     verified =
       if !is_nil(start_chapter) do
@@ -855,31 +750,7 @@ defmodule BibleEx.Librarian do
       end
 
     dbg(verified)
-    # if (startVerse != nil) {
 
-    #     if let startVerse = startVerse {
-    #         if (!(startVerse > 0 &&
-    #               BibleData.lastVerse[foundBook - 1][startChapter! - 1] >= startVerse)) {
-    #             return false;
-    #         }
-    #     }
-    #     if endVerse != nil {
-    #         if let endVerse = endVerse {
-    #             if let startVerse = startVerse {
-    #                 if startVerse > endVerse {
-    #                     return false
-    #                 }
-    #             }
-    #         }
-    #     }
-    # }
-
-    ## TODO: instead of if !is_nil(start_verse) do
-    ## put a case do here
-
-    # case !is_nil(start_verse) do
-
-    # end
     verified =
       case !is_nil(start_verse) do
         true ->
@@ -893,10 +764,6 @@ defmodule BibleEx.Librarian do
           if !(start_verse > 0 and books_last_verse_books_start_chapter >= start_verse) do
             false
           else
-            # Logger.debug(
-            # "negated if !(start_verse > 0 and books_last_verse_books_start_chapter >= start_verse) do"
-            # )
-            # dbg(verified)
             verified
           end
 
@@ -904,8 +771,6 @@ defmodule BibleEx.Librarian do
             if start_verse > end_verse do
               false
             else
-              # dbg(verified)
-              # Logger.debug("negated !is_nil(end_verse) && !is_nil(start_verse)")
               verified
             end
           else
@@ -915,15 +780,6 @@ defmodule BibleEx.Librarian do
         false ->
           verified
       end
-
-    # dbg(verified)
-    # if (mutEndChapter != nil) {
-    #     if let mutEndChapter = mutEndChapter {
-    #         if (!(BibleData.lastVerse[foundBook - 1].count >= mutEndChapter)) {
-    #             return false;
-    #         }
-    #     }
-    # }
 
     verified =
       case !is_nil(end_chapter) do
@@ -941,28 +797,6 @@ defmodule BibleEx.Librarian do
       end
 
     dbg(verified)
-    # if (endVerse != nil) {
-    #     if let endVerse = endVerse {
-    #         if (mutEndChapter == nil) {
-    #             return false;
-    #         }
-    #         if let mutEndChapter = mutEndChapter {
-    #             if (!(endVerse > 0 && BibleData.lastVerse[foundBook - 1][mutEndChapter - 1] >= endVerse)) {
-    #                 return false;
-    #             }
-    #         }
-
-    #         if (mutEndChapter == nil && startVerse == nil) {
-    #             return false;
-    #         }
-    #         if let startVerse = startVerse {
-    #             if  (endVerse < startVerse) {
-    #                 return false;
-    #             }
-    #         }
-    #     }
-
-    # }
 
     verified =
       case !is_nil(end_verse) do
@@ -1054,7 +888,6 @@ defmodule BibleEx.Librarian do
           case !is_nil(start_verse) do
             true ->
               # dbg(reference)
-              # reference = reference <> ":#{start_verse}"
               reference <> ":#{start_verse}"
 
             # dbg(reference)
@@ -1217,7 +1050,6 @@ defmodule BibleEx.Librarian do
                     dbg(reference)
 
                     if start_chapter != end_chapter do
-                      # reference = reference <> "-#{end_chapter}"
                       reference <> " - #{end_chapter}"
                     else
                       dbg(reference)
@@ -1263,15 +1095,6 @@ defmodule BibleEx.Librarian do
                 reference
               end
 
-            # if !is_nil(end_chapter) and end_chapter != start_chapter do
-            #   # dbg(reference)
-            #   reference = reference <> "-#{end_chapter}"
-            #   # # dbg(reference)
-            # else
-            #   # dbg(reference)
-            #   reference
-            # end
-
             dbg(reference)
             reference
           end
@@ -1300,84 +1123,3 @@ defmodule BibleEx.Librarian do
     if(reference == "", do: nil, else: reference)
   end
 end
-
-# public init(book: String,
-#      startChapter: Int? = nil,
-#      startVerse: Int? = nil,
-#      endChapter: Int? = nil,
-#      endVerse: Int? = nil) {
-
-#     self._bookNames = Librarian.getBookNames(book: book)
-
-#     var fullBookName: String
-#     if let swapBook = _bookNames["name"] {
-#         fullBookName = swapBook
-#     } else {
-#         fullBookName = book
-#     }
-
-#     startChapterNumber = startChapter ?? 1
-
-#     if let startChapter = startChapter {
-#         self.startChapter = Chapter(book: fullBookName, chapterNumber: startChapter)
-#     } else {
-#         self.startChapter = Chapter(book: fullBookName, chapterNumber: 1)
-#     }
-
-#     self.startVerseNumber = startVerse ?? 1
-
-#     if let startVerse = startVerse {
-#         self.startVerse = Verse(book: fullBookName, chapterNumber: startChapter, verseNumber: startVerse)
-#     } else {
-#         self.startVerse = Verse(book: fullBookName, chapterNumber: 1, verseNumber: 1)
-#     }
-
-#     self.endChapterNumber = endChapter ?? startChapter ?? Librarian.getLastChapterNumber(book: fullBookName)
-
-#     if let endChapter = endChapter {
-#         self.endChapter = Chapter(book: fullBookName, chapterNumber: endChapter)
-#     } else {
-#         if let startChapter = startChapter {
-#             self.endChapter = Chapter(book: fullBookName, chapterNumber: startChapter)
-#         } else {
-#             self.endChapter = Librarian.getLastChapter(book: fullBookName)
-#         }
-#     }
-
-#     self.endVerseNumber = endVerse ?? startVerse ?? Librarian.getLastVerseNumber(book: fullBookName, chapter: endChapter)
-
-#     if let endVerse = endVerse {
-#         self.endVerse = Verse(book: fullBookName, chapterNumber: startChapter, verseNumber: endVerse)
-
-#     } else {
-#         if let startVerse = startVerse {
-#             self.endVerse = Verse(book: fullBookName, chapterNumber: startChapter, verseNumber: startVerse)
-#         } else {
-#             self.endVerse = Librarian.getLastVerse(book: fullBookName, chapter: startChapter)
-#         }
-#     }
-
-#     self.reference = Librarian.createReferenceString(book: fullBookName,
-#                                                      startChapter: startChapterNumber,
-#                                                      startVerse: startVerse,
-#                                                      endChapter: endChapter,
-#                                                      endVerse: endVerse
-#     )
-
-#     self.referenceType = Librarian.identifyReferenceType(book: fullBookName,
-#                                                          startChapter: startChapterNumber,
-#                                                          startVerse: startVerse,
-#                                                          endChapter: endChapter,
-#                                                          endVerse: endVerse
-#     )
-
-#     self.isValid = Librarian.verifyReference(book: fullBookName,
-#                                              startChapter: startChapterNumber,
-#                                              startVerse: startVerse,
-#                                              endChapter: endChapter,
-#                                              endVerse: endVerse
-#     )
-
-#     self.book = fullBookName
-
-# }

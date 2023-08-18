@@ -16,10 +16,6 @@ defmodule BibleEx.Chapter do
             verses: nil,
             is_valid: false
 
-  # def new(book, chapter_number) do
-  #   %__MODULE__{book: book, chapter_number: chapter_number}
-  # end
-
   def new(book: book, chapter_number: chapter_number) do
     %__MODULE__{
       book: book,

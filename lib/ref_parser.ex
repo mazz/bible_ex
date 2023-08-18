@@ -41,21 +41,6 @@ defmodule BibleEx.RefParser do
         length(x) == 4 ->
           dbg(x)
 
-          ref = String.trim(Enum.at(x, 0))
-
-          dbg(ref)
-
-          # # NOTE: in iOS `James 1 - 2` generates ["James 1 - 2", "James", "1", "2"]
-          # if String.contains?(ref, "-") or
-          #      (String.contains?(ref, "—") and !String.contains?(ref, ":")) do
-          #   Reference.new(
-          #     book: String.trim(Enum.at(x, 1)),
-          #     start_chapter: String.to_integer(Enum.at(x, 2)),
-          #     start_verse: String.to_integer(Enum.at(x, 3)),
-          #     end_chapter: nil,
-          #     end_verse: nil
-          #   )
-          # else
           # book with chapter and verse i.e. ["Jn 3:16", "Jn", "3", "16"]
           Reference.new(
             book: String.trim(Enum.at(x, 1)),
@@ -122,30 +107,6 @@ defmodule BibleEx.RefParser do
                 end_verse: String.to_integer(Enum.at(x, 4))
               )
           end
-
-        # if String.contains?(ref, "-") or
-        #      (String.contains?(ref, "—") and !String.contains?(ref, ":")) do
-        #   dbg(x)
-
-        # if String.contains?(ref, "-") or (String.contains?(ref, "—") do
-        #   if String.contains?(ref, ":")) do
-
-        #   end
-        # else
-
-        # end
-
-        # else
-        #   dbg(x)
-        #   # book with chapter and verse and range i.e. ["Jn 3:16-18", "Jn", "3", "16", "18"]
-        #   Reference.new(
-        #     book: String.trim(Enum.at(x, 1)),
-        #     start_chapter: String.to_integer(Enum.at(x, 2)),
-        #     start_verse: String.to_integer(Enum.at(x, 3)),
-        #     end_chapter: nil,
-        #     end_verse: nil
-        #   )
-        # end
 
         length(x) == 6 ->
           # A reference that spans multiple chapters. i.e. ["John 3:16-4:3", "John", "3", "16", "4", "3"]
