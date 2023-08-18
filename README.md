@@ -1,6 +1,6 @@
 # BibleEx
 
-This is a port of the Dart package https:#github.com/joshpetit/reference_parser to Elixir.
+This is a port of the Dart package https://github.com/joshpetit/reference_parser to Elixir.
 
 An Elixir package that parses strings for bible references. You can parse single references or multiple references from a string in a variety of formats.
 
