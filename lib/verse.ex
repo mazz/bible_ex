@@ -14,7 +14,7 @@ defmodule BibleEx.Verse do
             # Whether this verse is found within the bible.
             is_valid: false
 
-  def new(book, chapter_number, verse_number) do
+  def new(book: book, chapter_number: chapter_number, verse_number: verse_number) do
     %__MODULE__{
       book: book,
       book_names: BibleEx.Librarian.get_book_names(book: book),

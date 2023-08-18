@@ -191,9 +191,9 @@ defmodule BibleEx.Librarian do
 
       book_name ->
         BibleEx.Verse.new(
-          book_name,
-          book_chapter,
-          get_last_verse_number(book: book_number, chapter: book_chapter)
+          book: book_name,
+          chapter_number: book_chapter,
+          verse_number: get_last_verse_number(book: book_number, chapter: book_chapter)
         )
     end
 
@@ -271,9 +271,9 @@ defmodule BibleEx.Librarian do
                   book_name ->
                     Enum.map(start_verse..last_verse, fn x ->
                       BibleEx.Verse.new(
-                        book_name,
-                        chapter,
-                        x
+                        book: book_name,
+                        chapter_number: chapter,
+                        verse_number: x
                       )
                     end)
                 end
@@ -306,7 +306,7 @@ defmodule BibleEx.Librarian do
 
         book_name ->
           last_chapter = length(Enum.at(BibleData.last_verse(), found_book - 1))
-          BibleEx.Chapter.new(book_name, last_chapter)
+          BibleEx.Chapter.new(book: book_name, chapter_number: last_chapter)
       end
     end
   end
@@ -381,7 +381,7 @@ defmodule BibleEx.Librarian do
 
               # if !is_nil(start_chapter) and !is_nil(end_chapter) do
               Enum.map(start_chapter..end_chapter, fn x ->
-                BibleEx.Chapter.new(book_name, x)
+                BibleEx.Chapter.new(book: book_name, chapter_number: x)
               end)
           end
 

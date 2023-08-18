@@ -20,7 +20,7 @@ defmodule BibleEx.Chapter do
   #   %__MODULE__{book: book, chapter_number: chapter_number}
   # end
 
-  def new(book, chapter_number) do
+  def new(book: book, chapter_number: chapter_number) do
     %__MODULE__{
       book: book,
       book_names: BibleEx.Librarian.get_book_names(book: book),
@@ -32,8 +32,7 @@ defmodule BibleEx.Chapter do
           start_chapter: chapter_number
         ),
       start_verse_number: 1,
-      chapter_number: chapter_number,
-      start_verse: BibleEx.Verse.new(book, chapter_number, 1),
+      start_verse: BibleEx.Verse.new(book: book, chapter_number: chapter_number, verse_number: 1),
       end_verse: BibleEx.Librarian.get_last_verse(book: book, chapter: chapter_number),
       end_verse_number:
         BibleEx.Librarian.get_last_verse_number(book: book, chapter: chapter_number),

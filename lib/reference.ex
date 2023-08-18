@@ -82,9 +82,9 @@ defmodule BibleEx.Reference do
 
     sc =
       if !is_nil(start_chapter) do
-        BibleEx.Chapter.new(bname, start_chapter)
+        BibleEx.Chapter.new(book: bname, chapter_number: start_chapter)
       else
-        BibleEx.Chapter.new(bname, 1)
+        BibleEx.Chapter.new(book: bname, chapter_number: 1)
       end
 
     scn =
@@ -96,7 +96,7 @@ defmodule BibleEx.Reference do
 
     ec =
       if !is_nil(end_chapter) do
-        BibleEx.Chapter.new(bname, end_chapter)
+        BibleEx.Chapter.new(book: bname, chapter_number: end_chapter)
       else
         sc
       end
@@ -110,9 +110,9 @@ defmodule BibleEx.Reference do
 
     sv =
       if !is_nil(start_verse) do
-        BibleEx.Verse.new(bname, start_chapter, start_verse)
+        BibleEx.Verse.new(book: bname, chapter_number: start_chapter, verse_number: start_verse)
       else
-        BibleEx.Verse.new(bname, 1, 1)
+        BibleEx.Verse.new(book: bname, chapter_number: 1, verse_number: 1)
       end
 
     svn =
@@ -124,10 +124,10 @@ defmodule BibleEx.Reference do
 
     ev =
       if !is_nil(end_verse) do
-        BibleEx.Verse.new(bname, scn, end_verse)
+        BibleEx.Verse.new(book: bname, chapter_number: scn, verse_number: end_verse)
       else
         if !is_nil(start_verse) do
-          BibleEx.Verse.new(bname, scn, start_verse)
+          BibleEx.Verse.new(book: bname, chapter_number: scn, verse_number: start_verse)
         else
           BibleEx.Librarian.get_last_verse_number(book: bname, chapter: scn)
         end
