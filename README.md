@@ -180,8 +180,7 @@ ecc.start_chapter_number # 1
 ecc.end_chapter_number # 12
 ecc.reference_type # :chapter_range
 ```
-Books don't have their own class, they're the equivalent of
-a `Reference` object.
+Books are the equivalent of a `Reference` object.
 
 ## Constructing References
 
