@@ -445,80 +445,47 @@ defmodule BibleEx.Librarian do
   end
 
   def identify_reference_type(
-        book: book,
+        book: _book,
         start_chapter: start_chapter,
         start_verse: start_verse,
         end_chapter: end_chapter,
         end_verse: end_verse
       ) do
-    dbg(start_chapter)
-    dbg(end_chapter)
-    dbg(start_verse)
-    dbg(end_verse)
-
-    reference_type = nil
-
-    reference_type =
-      cond do
-        is_nil(start_chapter) and is_nil(end_chapter) ->
-          if !is_nil(start_verse) do
-            if !is_nil(end_verse) do
-              :verse_range
-            else
-              :verse
-            end
+    cond do
+      is_nil(start_chapter) and is_nil(end_chapter) ->
+        if !is_nil(start_verse) do
+          if !is_nil(end_verse) do
+            :verse_range
           else
-            :book
+            :verse
           end
+        else
+          :book
+        end
 
-        !is_nil(start_chapter) and !is_nil(end_chapter) and start_chapter != end_chapter ->
-          :chapter_range
+      !is_nil(start_chapter) and !is_nil(end_chapter) and start_chapter != end_chapter ->
+        :chapter_range
 
-        !is_nil(start_chapter) and (is_nil(end_chapter) or end_chapter == start_chapter) ->
-          if !is_nil(start_verse) do
-            if !is_nil(end_verse) do
-              :verse_range
-            else
-              :verse
-            end
+      !is_nil(start_chapter) and (is_nil(end_chapter) or end_chapter == start_chapter) ->
+        if !is_nil(start_verse) do
+          if !is_nil(end_verse) do
+            :verse_range
           else
-            :chapter
+            :verse
           end
+        else
+          :chapter
+        end
 
-        !is_nil(start_verse) and !is_nil(end_verse) ->
-          :verse_range
+      !is_nil(start_verse) and !is_nil(end_verse) ->
+        :verse_range
 
-        !is_nil(start_verse) ->
-          :verse
+      !is_nil(start_verse) ->
+        :verse
 
-        true ->
-          nil
-      end
-
-    # reference_type =
-    #   if is_nil(start_chapter) and is_nil(end_chapter) do
-    #     :book
-    #   else
-    #     if !is_nil(start_chapter) and !is_nil(end_chapter) and start_chapter != end_chapter do
-    #       :chapter_range
-    #     else
-    #       if !is_nil(start_chapter) and (is_nil(end_chapter) or end_chapter == start_chapter) do
-    #         :chapter
-    #       else
-    #         if !is_nil(start_verse) and !is_nil(end_verse) do
-    #           :verse_range
-    #         else
-    #           if !is_nil(start_verse) do
-    #             :verse
-    #           else
-    #             reference_type
-    #           end
-    #         end
-    #       end
-    #     end
-    #   end
-
-    reference_type
+      true ->
+        nil
+    end
   end
 
   def verify_reference(book: book) when not is_nil(book) do
@@ -797,9 +764,9 @@ defmodule BibleEx.Librarian do
 
   def verify_reference(
         book: book,
-        start_chapter: start_chapter,
-        start_verse: start_verse,
-        end_chapter: end_chapter
+        start_chapter: _start_chapter,
+        start_verse: _start_verse,
+        end_chapter: _end_chapter
       )
       when not is_nil(book) do
     ## end_chapter alone is always a bad reference because the end_verse must be included
@@ -1053,7 +1020,7 @@ defmodule BibleEx.Librarian do
     verified
   end
 
-  def create_reference_string(book: book) do
+  def create_reference_string(book: _book) do
     nil
   end
 
@@ -1087,7 +1054,8 @@ defmodule BibleEx.Librarian do
           case !is_nil(start_verse) do
             true ->
               # dbg(reference)
-              reference = reference <> ":#{start_verse}"
+              # reference = reference <> ":#{start_verse}"
+              reference <> ":#{start_verse}"
 
             # dbg(reference)
 
@@ -1236,7 +1204,7 @@ defmodule BibleEx.Librarian do
                     reference =
                       if start_chapter != end_chapter do
                         dbg(reference)
-                        reference = reference <> "-#{end_chapter}"
+                        reference <> "-#{end_chapter}"
                       else
                         dbg(reference)
                         reference
@@ -1250,7 +1218,7 @@ defmodule BibleEx.Librarian do
 
                     if start_chapter != end_chapter do
                       # reference = reference <> "-#{end_chapter}"
-                      reference = reference <> " - #{end_chapter}"
+                      reference <> " - #{end_chapter}"
                     else
                       dbg(reference)
                       reference
@@ -1276,16 +1244,15 @@ defmodule BibleEx.Librarian do
                 reference =
                   if !is_nil(start_verse) do
                     dbg(reference)
-                    reference = reference <> "-#{end_verse}"
+                    reference <> "-#{end_verse}"
                   else
                     dbg(reference)
 
-                    reference =
-                      if !is_nil(end_chapter) do
-                        reference = reference <> " - #{end_chapter}:#{end_verse}"
-                      else
-                        reference = reference <> ":#{end_verse}"
-                      end
+                    if !is_nil(end_chapter) do
+                      reference <> " - #{end_chapter}:#{end_verse}"
+                    else
+                      reference <> ":#{end_verse}"
+                    end
                   end
 
                 dbg(reference)

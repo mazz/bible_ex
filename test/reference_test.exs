@@ -2,7 +2,6 @@ defmodule BibleEx.ReferenceTest do
   use ExUnit.Case
   doctest BibleEx
 
-  alias BibleEx.RefParser
   alias BibleEx.Chapter
   alias BibleEx.Reference
 

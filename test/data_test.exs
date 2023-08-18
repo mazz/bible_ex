@@ -93,141 +93,141 @@ defmodule BibleEx.DataTest do
   end
 
   test "librarian_correctly_generates_reference_type" do
-    Librarian.identify_reference_type(
-      book: "John",
-      start_chapter: nil,
-      start_verse: 4,
-      end_chapter: nil,
-      end_verse: 6
-    ) == :verse_range
+    assert Librarian.identify_reference_type(
+             book: "John",
+             start_chapter: nil,
+             start_verse: 4,
+             end_chapter: nil,
+             end_verse: 6
+           ) == :verse_range
 
-    Librarian.identify_reference_type(
-      book: "John",
-      start_chapter: 2,
-      start_verse: 4,
-      end_chapter: nil,
-      end_verse: 6
-    ) == :verse_range
+    assert Librarian.identify_reference_type(
+             book: "John",
+             start_chapter: 2,
+             start_verse: 4,
+             end_chapter: nil,
+             end_verse: 6
+           ) == :verse_range
 
-    Librarian.identify_reference_type(
-      book: "John",
-      start_chapter: 2,
-      start_verse: 4,
-      end_chapter: nil,
-      end_verse: nil
-    ) == :verse
+    assert Librarian.identify_reference_type(
+             book: "John",
+             start_chapter: 2,
+             start_verse: 4,
+             end_chapter: nil,
+             end_verse: nil
+           ) == :verse
 
-    Librarian.identify_reference_type(
-      book: "John",
-      start_chapter: 2,
-      start_verse: 4,
-      end_chapter: 5,
-      end_verse: nil
-    ) == :chapter_range
+    assert Librarian.identify_reference_type(
+             book: "John",
+             start_chapter: 2,
+             start_verse: 4,
+             end_chapter: 5,
+             end_verse: nil
+           ) == :chapter_range
 
-    Librarian.identify_reference_type(
-      book: "John",
-      start_chapter: 1,
-      start_verse: 1,
-      end_chapter: nil,
-      end_verse: nil
-    ) == :verse
+    assert Librarian.identify_reference_type(
+             book: "John",
+             start_chapter: 1,
+             start_verse: 1,
+             end_chapter: nil,
+             end_verse: nil
+           ) == :verse
 
-    Librarian.identify_reference_type(
-      book: "John",
-      start_chapter: 1,
-      start_verse: nil,
-      end_chapter: 2,
-      end_verse: nil
-    ) == :chapter_range
+    assert Librarian.identify_reference_type(
+             book: "John",
+             start_chapter: 1,
+             start_verse: nil,
+             end_chapter: 2,
+             end_verse: nil
+           ) == :chapter_range
 
-    Librarian.identify_reference_type(
-      book: "Joeseph",
-      start_chapter: 1,
-      start_verse: 1,
-      end_chapter: 2,
-      end_verse: nil
-    ) == :chapter_range
+    assert Librarian.identify_reference_type(
+             book: "Joeseph",
+             start_chapter: 1,
+             start_verse: 1,
+             end_chapter: 2,
+             end_verse: nil
+           ) == :chapter_range
 
-    Librarian.identify_reference_type(
-      book: "John",
-      start_chapter: nil,
-      start_verse: 4,
-      end_chapter: nil,
-      end_verse: 6
-    ) == :verse_range
+    assert Librarian.identify_reference_type(
+             book: "John",
+             start_chapter: nil,
+             start_verse: 4,
+             end_chapter: nil,
+             end_verse: 6
+           ) == :verse_range
 
-    Librarian.identify_reference_type(
-      book: "John",
-      start_chapter: nil,
-      start_verse: 4,
-      end_chapter: nil,
-      end_verse: nil
-    ) == :verse
+    assert Librarian.identify_reference_type(
+             book: "John",
+             start_chapter: nil,
+             start_verse: 4,
+             end_chapter: nil,
+             end_verse: nil
+           ) == :verse
 
-    Librarian.identify_reference_type(
-      book: "John",
-      start_chapter: nil,
-      start_verse: nil,
-      end_chapter: nil,
-      end_verse: nil
-    ) == :book
+    assert Librarian.identify_reference_type(
+             book: "John",
+             start_chapter: nil,
+             start_verse: nil,
+             end_chapter: nil,
+             end_verse: nil
+           ) == :book
 
-    Librarian.identify_reference_type(
-      book: "John",
-      start_chapter: 1,
-      start_verse: nil,
-      end_chapter: nil,
-      end_verse: nil
-    ) == :chapter
+    assert Librarian.identify_reference_type(
+             book: "John",
+             start_chapter: 1,
+             start_verse: nil,
+             end_chapter: nil,
+             end_verse: nil
+           ) == :chapter
 
-    Librarian.identify_reference_type(
-      book: "John",
-      start_chapter: 1,
-      start_verse: nil,
-      end_chapter: 2,
-      end_verse: nil
-    ) == :chapter_range
+    assert Librarian.identify_reference_type(
+             book: "John",
+             start_chapter: 1,
+             start_verse: nil,
+             end_chapter: 2,
+             end_verse: nil
+           ) == :chapter_range
 
-    Librarian.identify_reference_type(
-      book: "John",
-      start_chapter: 1,
-      start_verse: 1,
-      end_chapter: 2,
-      end_verse: nil
-    ) == :chapter_range
+    assert Librarian.identify_reference_type(
+             book: "John",
+             start_chapter: 1,
+             start_verse: 1,
+             end_chapter: 2,
+             end_verse: nil
+           ) == :chapter_range
 
-    Librarian.identify_reference_type(
-      book: "John",
-      start_chapter: 1,
-      start_verse: nil,
-      end_chapter: 2,
-      end_verse: nil
-    ) == :chapter_range
+    assert Librarian.identify_reference_type(
+             book: "John",
+             start_chapter: 1,
+             start_verse: nil,
+             end_chapter: 2,
+             end_verse: nil
+           ) == :chapter_range
 
-    Librarian.identify_reference_type(
-      book: "John",
-      start_chapter: 1,
-      start_verse: nil,
-      end_chapter: 2,
-      end_verse: 1
-    ) == :chapter_range
+    assert Librarian.identify_reference_type(
+             book: "John",
+             start_chapter: 1,
+             start_verse: nil,
+             end_chapter: 2,
+             end_verse: 1
+           ) == :chapter_range
 
-    Librarian.identify_reference_type(
-      book: "John",
-      start_chapter: 1,
-      start_verse: 1,
-      end_chapter: 2,
-      end_verse: 1
-    ) == :chapter_range
+    assert Librarian.identify_reference_type(
+             book: "John",
+             start_chapter: 1,
+             start_verse: 1,
+             end_chapter: 2,
+             end_verse: 1
+           ) == :chapter_range
 
-    Librarian.identify_reference_type(
-      book: "John",
-      start_chapter: 1,
-      start_verse: 1,
-      end_chapter: nil,
-      end_verse: nil
-    ) == :verse
+    assert Librarian.identify_reference_type(
+             book: "John",
+             start_chapter: 1,
+             start_verse: 1,
+             end_chapter: nil,
+             end_verse: nil
+           ) == :verse
   end
 
   test "librarian_correctly_generates_general_reference_type" do
@@ -259,14 +259,24 @@ defmodule BibleEx.DataTest do
     assert genesis_book.reference_type == :chapter_range
     assert genesis_book.is_valid == true
 
-    genesis_ref_not_valid =
+    genesis_chapter_range =
       BibleEx.Reference.new(
         book: "Genesis",
         start_chapter: 2,
         start_verse: 3,
-        end_chapter: 1,
-        end_verse: 2
+        end_chapter: 4,
+        end_verse: 5
       )
+
+    # dbg(genesis_ref)
+    assert genesis_chapter_range.book == "Genesis"
+    assert genesis_chapter_range.start_chapter_number == 2
+    assert genesis_chapter_range.start_verse_number == 3
+    assert genesis_chapter_range.end_chapter_number == 4
+    assert genesis_chapter_range.end_verse_number == 5
+    assert genesis_chapter_range.reference == "Genesis 2:3 - 4:5"
+    assert genesis_chapter_range.reference_type == :chapter_range
+    assert genesis_chapter_range.is_valid == true
 
     genesis_chapter_range =
       BibleEx.Reference.new(
@@ -295,36 +305,6 @@ defmodule BibleEx.DataTest do
         end_chapter: 1,
         end_verse: 2
       )
-
-    genesis_chapter_range =
-      BibleEx.Reference.new(
-        book: "Genesis",
-        start_chapter: 2,
-        start_verse: 3,
-        end_chapter: 4,
-        end_verse: 5
-      )
-
-    # dbg(genesis_ref)
-    assert genesis_chapter_range.book == "Genesis"
-    assert genesis_chapter_range.start_chapter_number == 2
-    assert genesis_chapter_range.start_verse_number == 3
-    assert genesis_chapter_range.end_chapter_number == 4
-    assert genesis_chapter_range.end_verse_number == 5
-    assert genesis_chapter_range.reference == "Genesis 2:3 - 4:5"
-    assert genesis_chapter_range.reference_type == :chapter_range
-    assert genesis_chapter_range.is_valid == true
-
-    genesis_ref_not_valid =
-      BibleEx.Reference.new(
-        book: "Genesis",
-        start_chapter: 2,
-        start_verse: 3,
-        end_chapter: 1,
-        end_verse: 2
-      )
-
-    dbg(genesis_ref_not_valid)
 
     assert genesis_ref_not_valid.start_chapter_number == 2
     assert genesis_ref_not_valid.start_verse_number == 3
