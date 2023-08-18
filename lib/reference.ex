@@ -1,5 +1,8 @@
 defmodule BibleEx.Reference do
   alias BibleEx.Librarian
+  alias BibleEx.Chapter
+  alias BibleEx.Verse
+
   @enforce_keys [:book]
 
   defstruct book: "",
@@ -73,7 +76,7 @@ defmodule BibleEx.Reference do
         end_verse: end_verse
       ) do
     bname =
-      case BibleEx.Librarian.get_book_names(book: book) do
+      case Librarian.get_book_names(book: book) do
         nil ->
           book
 
@@ -83,9 +86,9 @@ defmodule BibleEx.Reference do
 
     sc =
       if !is_nil(start_chapter) do
-        BibleEx.Chapter.new(book: bname, chapter_number: start_chapter)
+        Chapter.new(book: bname, chapter_number: start_chapter)
       else
-        BibleEx.Chapter.new(book: bname, chapter_number: 1)
+        Chapter.new(book: bname, chapter_number: 1)
       end
 
     scn =
@@ -97,12 +100,12 @@ defmodule BibleEx.Reference do
 
     ec =
       if !is_nil(end_chapter) do
-        BibleEx.Chapter.new(book: bname, chapter_number: end_chapter)
+        Chapter.new(book: bname, chapter_number: end_chapter)
       else
         if !is_nil(start_chapter) do
-          BibleEx.Chapter.new(book: bname, chapter_number: start_chapter)
+          Chapter.new(book: bname, chapter_number: start_chapter)
         else
-          BibleEx.Chapter.new(book: bname, chapter_number: end_chapter)
+          Chapter.new(book: bname, chapter_number: end_chapter)
         end
       end
 
@@ -113,15 +116,15 @@ defmodule BibleEx.Reference do
         if !is_nil(start_chapter) do
           scn
         else
-          BibleEx.Librarian.get_last_chapter_number(book: bname)
+          Librarian.get_last_chapter_number(book: bname)
         end
       end
 
     sv =
       if !is_nil(start_verse) do
-        BibleEx.Verse.new(book: bname, chapter_number: start_chapter, verse_number: start_verse)
+        Verse.new(book: bname, chapter_number: start_chapter, verse_number: start_verse)
       else
-        BibleEx.Verse.new(book: bname, chapter_number: 1, verse_number: 1)
+        Verse.new(book: bname, chapter_number: 1, verse_number: 1)
       end
 
     svn =
@@ -133,12 +136,12 @@ defmodule BibleEx.Reference do
 
     ev =
       if !is_nil(end_verse) do
-        BibleEx.Verse.new(book: bname, chapter_number: scn, verse_number: end_verse)
+        Verse.new(book: bname, chapter_number: scn, verse_number: end_verse)
       else
         if !is_nil(start_verse) do
-          BibleEx.Verse.new(book: bname, chapter_number: scn, verse_number: start_verse)
+          Verse.new(book: bname, chapter_number: scn, verse_number: start_verse)
         else
-          BibleEx.Librarian.get_last_verse_number(book: bname, chapter: scn)
+          Librarian.get_last_verse_number(book: bname, chapter: scn)
         end
       end
 
@@ -149,7 +152,7 @@ defmodule BibleEx.Reference do
         if !is_nil(start_verse) do
           start_verse
         else
-          BibleEx.Librarian.get_last_verse_number(book: bname, chapter: ecn)
+          Librarian.get_last_verse_number(book: bname, chapter: ecn)
         end
       end
 
@@ -162,7 +165,7 @@ defmodule BibleEx.Reference do
     # dbg(end_chapter)
 
     chapters =
-      BibleEx.Librarian.get_chapters(
+      Librarian.get_chapters(
         book: bname,
         start_chapter: scn,
         end_chapter: ecn
@@ -222,10 +225,10 @@ defmodule BibleEx.Reference do
 
     %__MODULE__{
       book: bname,
-      book_names: BibleEx.Librarian.get_book_names(book: bname),
-      book_number: BibleEx.Librarian.find_book_number(book: bname),
+      book_names: Librarian.get_book_names(book: bname),
+      book_number: Librarian.find_book_number(book: bname),
       reference:
-        BibleEx.Librarian.create_reference_string(
+        Librarian.create_reference_string(
           book: bname,
           start_chapter: start_chapter,
           start_verse: start_verse,
@@ -233,7 +236,7 @@ defmodule BibleEx.Reference do
           end_verse: end_verse
         ),
       reference_type:
-        BibleEx.Librarian.identify_reference_type(
+        Librarian.identify_reference_type(
           book: bname,
           start_chapter: scn,
           start_verse: start_verse,
@@ -249,7 +252,7 @@ defmodule BibleEx.Reference do
       end_verse: ev,
       end_verse_number: evn,
       is_valid:
-        BibleEx.Librarian.verify_reference(
+        Librarian.verify_reference(
           book: bname,
           start_chapter: scn,
           start_verse: start_verse,
