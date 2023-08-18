@@ -28,7 +28,7 @@ import BibleEx
 ```
 
 ## Parsing References
-use the `parseReference` function to retrieve a single reference:
+use the `parse_references` function to retrieve a single reference:
 
 ```elixir
 alias BibleEx.RefParser
@@ -233,7 +233,10 @@ by adding `bible_ex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:bible_ex, "~> 0.1.0"}
+      {
+        :bible_ex,
+        git: "https://github.com/mazz/bible_ex.git", branch: "main"
+      }
   ]
 end
 ```
