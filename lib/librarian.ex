@@ -58,7 +58,7 @@ defmodule BibleEx.Librarian do
 
     case found_book do
       nil ->
-        %{}
+        nil
 
       found_book ->
         # book_names = BibleData.book_names()

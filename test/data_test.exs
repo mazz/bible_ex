@@ -37,11 +37,11 @@ defmodule BibleEx.DataTest do
   end
 
   test "returns the empty map for the incorrect book name <empty string>" do
-    assert Librarian.get_book_names(book: "") == %{}
+    assert Librarian.get_book_names(book: "") == nil
   end
 
   test "returns the empty map for the incorrect book name nil" do
-    assert Librarian.get_book_names(book: nil) == %{}
+    assert Librarian.get_book_names(book: nil) == nil
   end
 
   test "librarian_returns_1_for_genesis" do

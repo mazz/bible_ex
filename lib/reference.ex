@@ -1,4 +1,5 @@
 defmodule BibleEx.Reference do
+  alias BibleEx.Librarian
   @enforce_keys [:book]
 
   defstruct book: "",
@@ -152,6 +153,10 @@ defmodule BibleEx.Reference do
         end
       end
 
+    # dbg(scn)
+    # dbg(sc)
+    # dbg(start_chapter)
+
     # dbg(ecn)
     # dbg(ec)
     # dbg(end_chapter)
@@ -163,21 +168,57 @@ defmodule BibleEx.Reference do
         end_chapter: ecn
       )
 
-    # if the reference has a verse range(both start_verse, end_verse, not nil) limit the verses to range
-    verses =
-      if !is_nil(start_verse) and !is_nil(end_verse) do
-        BibleEx.Librarian.get_verses(
+    chapter_list =
+      scn..ecn
+      |> Enum.to_list()
+
+    dbg(chapter_list)
+
+    verse_collection =
+      Enum.map(chapter_list, fn x ->
+        # if svn is nil then choose 1, else choose svn
+        find_start_verse =
+          if !is_nil(svn) and x == Enum.at(chapter_list, 0) do
+            svn
+          else
+            1
+          end
+
+        # if evn is nil then choose last verse, else choose evn
+        find_last_verse =
+          if !is_nil(evn) and x == List.last(chapter_list) do
+            evn
+          else
+            Librarian.get_last_verse_number(book: bname, chapter: x)
+          end
+
+        Librarian.get_verses(
           book: bname,
-          chapter: start_chapter,
-          start_verse: start_verse,
-          end_verse: end_verse
+          chapter: x,
+          start_verse: find_start_verse,
+          end_verse: find_last_verse
         )
-      else
-        Enum.map(chapters, fn x ->
-          BibleEx.Librarian.get_verses(book: bname, chapter: x.chapter_number)
-        end)
-        |> List.flatten()
-      end
+      end)
+
+    # dbg(verse_collection)
+
+    # # if the reference has a verse range(both start_verse, end_verse, not nil) limit the verses to range
+    # verses =
+    #   if !is_nil(start_verse) and !is_nil(end_verse) do
+    #     BibleEx.Librarian.get_verses(
+    #       book: bname,
+    #       chapter: start_chapter,
+    #       start_verse: start_verse,
+    #       end_verse: end_verse
+    #     )
+    #   else
+    #     Enum.map(chapters, fn x ->
+    #       BibleEx.Librarian.get_verses(book: bname, chapter: x.chapter_number)
+    #     end)
+    #     |> List.flatten()
+    #   end
+
+    # dbg(verses)
 
     %__MODULE__{
       book: bname,
@@ -216,7 +257,7 @@ defmodule BibleEx.Reference do
           end_verse: end_verse
         ),
       chapters: chapters,
-      verses: verses
+      verses: List.flatten(verse_collection)
     }
   end
 
