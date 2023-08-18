@@ -50,4 +50,10 @@ defmodule BibleEx.ReferenceTest do
     verses = verse.verses
     assert length(verses) == 1
   end
+
+  @tag runnable: true
+  test "creates_non_bible_reference" do
+    mcd = Reference.new(book: "McDonald", start_chapter: 2, start_verse: 4, end_chapter: 10)
+    dbg(mcd)
+  end
 end

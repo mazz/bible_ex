@@ -9,18 +9,23 @@ defmodule BibleEx.Librarian do
 
     cond do
       book_lower == "" ->
+        dbg(nil)
         nil
 
       BibleData.books()[book_lower] ->
+        dbg(book_lower)
         BibleData.books()[book_lower]
 
       BibleData.osis_books()[book_lower] ->
+        dbg(book_lower)
         BibleData.osis_books()[book_lower]
 
       BibleData.shortened_books()[book_lower] ->
+        dbg(book_lower)
         BibleData.shortened_books()[book_lower]
 
       BibleData.variants()[book_lower] ->
+        dbg(book_lower)
         BibleData.variants()[book_lower]
 
       true ->
@@ -159,16 +164,22 @@ defmodule BibleEx.Librarian do
 
     book_names = get_book_names(book: book)
 
-    case Map.get(book_names, :name, nil) do
-      nil ->
-        nil
+    dbg(book_number)
 
-      book_name ->
-        BibleEx.Verse.new(
-          book: book_name,
-          chapter_number: book_chapter,
-          verse_number: get_last_verse_number(book: book_number, chapter: book_chapter)
-        )
+    if is_nil(book_number) do
+      nil
+    else
+      case Map.get(book_names, :name, nil) do
+        nil ->
+          nil
+
+        book_name ->
+          BibleEx.Verse.new(
+            book: book_name,
+            chapter_number: book_chapter,
+            verse_number: get_last_verse_number(book: book_number, chapter: book_chapter)
+          )
+      end
     end
   end
 
@@ -188,59 +199,63 @@ defmodule BibleEx.Librarian do
           book
       end
 
-    case chapter do
-      nil ->
-        nil
+    if is_nil(book_number) do
+      nil
+    else
+      case chapter do
+        nil ->
+          nil
 
-      chapter ->
-        # check if chapter is out of range
-        dbg(chapter)
+        chapter ->
+          # check if chapter is out of range
+          dbg(chapter)
 
-        start_verse =
-          if !is_nil(start_verse) do
-            start_verse
-          else
-            1
-          end
-
-        end_verse =
-          if !is_nil(end_verse) do
-            end_verse
-          else
-            BibleData.last_verse()
-            |> Enum.at(book_number - 1)
-            |> Enum.at(chapter - 1)
-          end
-
-        case start_verse > end_verse do
-          true ->
-            nil
-
-          false ->
-            dbg(end_verse)
-
-            case end_verse do
-              nil ->
-                nil
-
-              last_verse ->
-                book_names = get_book_names(book: book)
-
-                case Map.get(book_names, :name, nil) do
-                  nil ->
-                    nil
-
-                  book_name ->
-                    Enum.map(start_verse..last_verse, fn x ->
-                      BibleEx.Verse.new(
-                        book: book_name,
-                        chapter_number: chapter,
-                        verse_number: x
-                      )
-                    end)
-                end
+          start_verse =
+            if !is_nil(start_verse) do
+              start_verse
+            else
+              1
             end
-        end
+
+          end_verse =
+            if !is_nil(end_verse) do
+              end_verse
+            else
+              BibleData.last_verse()
+              |> Enum.at(book_number - 1)
+              |> Enum.at(chapter - 1)
+            end
+
+          case start_verse > end_verse do
+            true ->
+              nil
+
+            false ->
+              dbg(end_verse)
+
+              case end_verse do
+                nil ->
+                  nil
+
+                last_verse ->
+                  book_names = get_book_names(book: book)
+
+                  case Map.get(book_names, :name, nil) do
+                    nil ->
+                      nil
+
+                    book_name ->
+                      Enum.map(start_verse..last_verse, fn x ->
+                        BibleEx.Verse.new(
+                          book: book_name,
+                          chapter_number: chapter,
+                          verse_number: x
+                        )
+                      end)
+                  end
+              end
+          end
+      end
     end
   end
 
@@ -296,54 +311,60 @@ defmodule BibleEx.Librarian do
     else
       book_names = get_book_names(book: book)
 
-      case Map.get(book_names, :name, nil) do
-        nil ->
-          nil
+      dbg(found_book)
 
-        book_name ->
-          case start_chapter > end_chapter do
-            true ->
-              nil
+      if is_nil(found_book) do
+        nil
+      else
+        case Map.get(book_names, :name, nil) do
+          nil ->
+            nil
 
-            false ->
-              # if start_chapter is nil, start at beginning of book
-              start_chapter =
-                if is_nil(start_chapter) do
-                  1
-                else
-                  start_chapter
-                end
+          book_name ->
+            case start_chapter > end_chapter do
+              true ->
+                nil
 
-              # if end_chapter is nil, use start chapter
-              end_chapter =
-                if is_nil(end_chapter) do
-                  start_chapter
-                else
-                  end_chapter
-                end
+              false ->
+                # if start_chapter is nil, start at beginning of book
+                start_chapter =
+                  if is_nil(start_chapter) do
+                    1
+                  else
+                    start_chapter
+                  end
 
-              # if either are outside of range then bring them back to book limit
-              start_chapter =
-                if start_chapter < 1 do
-                  1
-                else
-                  start_chapter
-                end
+                # if end_chapter is nil, use start chapter
+                end_chapter =
+                  if is_nil(end_chapter) do
+                    start_chapter
+                  else
+                    end_chapter
+                  end
 
-              end_chapter =
-                if end_chapter > length(Enum.at(BibleData.last_verse(), found_book - 1)) do
-                  length(Enum.at(BibleData.last_verse(), found_book - 1))
-                else
-                  end_chapter
-                end
+                # if either are outside of range then bring them back to book limit
+                start_chapter =
+                  if start_chapter < 1 do
+                    1
+                  else
+                    start_chapter
+                  end
 
-              dbg(start_chapter)
-              dbg(end_chapter)
+                end_chapter =
+                  if end_chapter > length(Enum.at(BibleData.last_verse(), found_book - 1)) do
+                    length(Enum.at(BibleData.last_verse(), found_book - 1))
+                  else
+                    end_chapter
+                  end
 
-              Enum.map(start_chapter..end_chapter, fn x ->
-                BibleEx.Chapter.new(book: book_name, chapter_number: x)
-              end)
-          end
+                dbg(start_chapter)
+                dbg(end_chapter)
+
+                Enum.map(start_chapter..end_chapter, fn x ->
+                  BibleEx.Chapter.new(book: book_name, chapter_number: x)
+                end)
+            end
+        end
       end
     end
   end
@@ -569,27 +590,32 @@ defmodule BibleEx.Librarian do
 
     # dbg(verified)
 
+    # book is not in bible
     verified =
-      case !is_nil(start_verse) do
-        true ->
-          if !is_nil(start_chapter) do
-            books_last_verse_books_start_chapter =
-              BibleData.last_verse()
-              |> Enum.at(found_book - 1)
-              |> Enum.at(start_chapter - 1)
+      if is_nil(found_book) do
+        false
+      else
+        case !is_nil(start_verse) do
+          true ->
+            if !is_nil(start_chapter) do
+              books_last_verse_books_start_chapter =
+                BibleData.last_verse()
+                |> Enum.at(found_book - 1)
+                |> Enum.at(start_chapter - 1)
 
-            if !(start_verse > 0 and
-                   books_last_verse_books_start_chapter >= start_verse) do
-              false
+              if !(start_verse > 0 and
+                     books_last_verse_books_start_chapter >= start_verse) do
+                false
+              else
+                verified
+              end
             else
-              verified
+              false
             end
-          else
-            false
-          end
 
-        false ->
-          verified
+          false ->
+            verified
+        end
       end
 
     # dbg(verified)
@@ -726,127 +752,131 @@ defmodule BibleEx.Librarian do
       end
 
     verified =
-      if !is_nil(start_chapter) do
-        # books_last_verse = length(BibleData.last_verse()[found_book - 1])
-        books_last_verse = length(BibleData.last_verse() |> Enum.at(found_book - 1))
-
-        if !(start_chapter > 0 and books_last_verse >= start_chapter) do
-          false
-        else
-          verified
-        end
-
-        if !is_nil(end_chapter) and start_chapter > end_chapter do
-          false
-        else
-          verified
-        end
+      if is_nil(found_book) do
+        false
       else
-        if !is_nil(end_chapter) or !is_nil(end_verse) do
-          false
-        else
-          verified
-        end
-      end
-
-    dbg(verified)
-
-    verified =
-      case !is_nil(start_verse) do
-        true ->
-          books_last_verse_books_start_chapter =
-            BibleData.last_verse()
-            |> Enum.at(found_book - 1)
-            |> Enum.at(start_chapter - 1)
-
-          # dbg(books_last_verse_books_start_chapter)
-
-          if !(start_verse > 0 and books_last_verse_books_start_chapter >= start_verse) do
-            false
-          else
-            verified
-          end
-
-          if !is_nil(end_verse) and !is_nil(start_verse) do
-            if start_verse > end_verse do
-              false
-            else
-              verified
-            end
-          else
-            verified
-          end
-
-        false ->
-          verified
-      end
-
-    verified =
-      case !is_nil(end_chapter) do
-        true ->
+        if !is_nil(start_chapter) do
+          # books_last_verse = length(BibleData.last_verse()[found_book - 1])
           books_last_verse = length(BibleData.last_verse() |> Enum.at(found_book - 1))
 
-          if !(books_last_verse >= end_chapter) do
+          if !(start_chapter > 0 and books_last_verse >= start_chapter) do
             false
           else
             verified
           end
 
-        false ->
-          verified
-      end
+          if !is_nil(end_chapter) and start_chapter > end_chapter do
+            false
+          else
+            verified
+          end
+        else
+          if !is_nil(end_chapter) or !is_nil(end_verse) do
+            false
+          else
+            verified
+          end
+        end
 
-    dbg(verified)
+        dbg(verified)
 
-    verified =
-      case !is_nil(end_verse) do
-        true ->
-          dbg(verified)
+        verified =
+          case !is_nil(start_verse) do
+            true ->
+              books_last_verse_books_start_chapter =
+                BibleData.last_verse()
+                |> Enum.at(found_book - 1)
+                |> Enum.at(start_chapter - 1)
 
-          case is_nil(end_chapter) do
+              # dbg(books_last_verse_books_start_chapter)
+
+              if !(start_verse > 0 and books_last_verse_books_start_chapter >= start_verse) do
+                false
+              else
+                verified
+              end
+
+              if !is_nil(end_verse) and !is_nil(start_verse) do
+                if start_verse > end_verse do
+                  false
+                else
+                  verified
+                end
+              else
+                verified
+              end
+
+            false ->
+              verified
+          end
+
+        verified =
+          case !is_nil(end_chapter) do
+            true ->
+              books_last_verse = length(BibleData.last_verse() |> Enum.at(found_book - 1))
+
+              if !(books_last_verse >= end_chapter) do
+                false
+              else
+                verified
+              end
+
+            false ->
+              verified
+          end
+
+        dbg(verified)
+
+        verified =
+          case !is_nil(end_verse) do
             true ->
               dbg(verified)
-              false
+
+              case is_nil(end_chapter) do
+                true ->
+                  dbg(verified)
+                  false
+
+                false ->
+                  dbg(verified)
+
+                  very_last_verse =
+                    BibleData.last_verse()
+                    |> Enum.at(found_book - 1)
+                    |> Enum.at(end_chapter - 1)
+
+                  dbg(very_last_verse)
+
+                  if end_verse > 0 and
+                       very_last_verse >= end_verse do
+                    dbg(verified)
+                    verified
+                  else
+                    dbg(verified)
+                    # verified
+                    if is_nil(end_chapter) and is_nil(start_verse) do
+                      dbg(verified)
+                      false
+                    else
+                      dbg(verified)
+
+                      if end_verse < start_verse do
+                        dbg(verified)
+                        false
+                      else
+                        dbg(verified)
+                        verified
+                      end
+
+                      # verified
+                    end
+                  end
+              end
 
             false ->
               dbg(verified)
-
-              very_last_verse =
-                BibleData.last_verse()
-                |> Enum.at(found_book - 1)
-                |> Enum.at(end_chapter - 1)
-
-              dbg(very_last_verse)
-
-              if end_verse > 0 and
-                   very_last_verse >= end_verse do
-                dbg(verified)
-                verified
-              else
-                dbg(verified)
-                # verified
-                if is_nil(end_chapter) and is_nil(start_verse) do
-                  dbg(verified)
-                  false
-                else
-                  dbg(verified)
-
-                  if end_verse < start_verse do
-                    dbg(verified)
-                    false
-                  else
-                    dbg(verified)
-                    verified
-                  end
-
-                  # verified
-                end
-              end
+              verified
           end
-
-        false ->
-          dbg(verified)
-          verified
       end
 
     dbg(verified)
