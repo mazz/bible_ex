@@ -6,6 +6,7 @@ defmodule BibleEx.MixProject do
       app: :bible_ex,
       version: "0.1.0",
       elixir: "~> 1.14",
+      build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       description: description(),
       package: package(),
@@ -37,8 +38,12 @@ defmodule BibleEx.MixProject do
   defp package() do
     [
       files: ~w(lib .formatter.exs mix.exs README* LICENSE*),
+      maintainers: ["Michael Hanna"],
       licenses: ["BSD-2-Clause"],
-      links: %{"GitHub" => "https://github.com/mazz/bible_ex"}
+      links: %{
+        "GitHub" => "https://github.com/mazz/bible_ex",
+        "Docs" => "https://hexdocs.pm/bible_ex/"
+      }
     ]
   end
 end
