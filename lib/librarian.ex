@@ -9,23 +9,18 @@ defmodule BibleEx.Librarian do
 
     cond do
       book_lower == "" ->
-
         nil
 
       BibleData.books()[book_lower] ->
-
         BibleData.books()[book_lower]
 
       BibleData.osis_books()[book_lower] ->
-
         BibleData.osis_books()[book_lower]
 
       BibleData.shortened_books()[book_lower] ->
-
         BibleData.shortened_books()[book_lower]
 
       BibleData.variants()[book_lower] ->
-
         BibleData.variants()[book_lower]
 
       true ->
@@ -96,8 +91,6 @@ defmodule BibleEx.Librarian do
           book
       end
 
-
-
     case found_book do
       nil ->
         nil
@@ -164,8 +157,6 @@ defmodule BibleEx.Librarian do
 
     book_names = get_book_names(book: book)
 
-
-
     if is_nil(book_number) do
       nil
     else
@@ -188,8 +179,6 @@ defmodule BibleEx.Librarian do
   end
 
   def get_verses(book: book, chapter: chapter, start_verse: start_verse, end_verse: end_verse) do
-
-
     book_number =
       case BibleEx.typeof(book) do
         "binary" ->
@@ -208,7 +197,6 @@ defmodule BibleEx.Librarian do
 
         chapter ->
           # check if chapter is out of range
-
 
           start_verse =
             if !is_nil(start_verse) do
@@ -231,8 +219,6 @@ defmodule BibleEx.Librarian do
               nil
 
             false ->
-
-
               case end_verse do
                 nil ->
                   nil
@@ -311,8 +297,6 @@ defmodule BibleEx.Librarian do
     else
       book_names = get_book_names(book: book)
 
-
-
       if is_nil(found_book) do
         nil
       else
@@ -356,9 +340,6 @@ defmodule BibleEx.Librarian do
                   else
                     end_chapter
                   end
-
-
-
 
                 Enum.map(start_chapter..end_chapter, fn x ->
                   BibleEx.Chapter.new(book: book_name, chapter_number: x)
@@ -466,10 +447,7 @@ defmodule BibleEx.Librarian do
   end
 
   def verify_reference(book: book) when not is_nil(book) do
-
     verified = true
-
-
 
     found_book =
       case BibleEx.typeof(book) do
@@ -491,10 +469,7 @@ defmodule BibleEx.Librarian do
   end
 
   def verify_reference(book: book, start_chapter: start_chapter) when not is_nil(book) do
-
     verified = true
-
-
 
     found_book =
       case BibleEx.typeof(book) do
@@ -512,15 +487,12 @@ defmodule BibleEx.Librarian do
         verified
       end
 
-
-
     ## if book is not verified at this point, short-circuit
 
     verified =
       case verified do
         true ->
           if !is_nil(start_chapter) do
-
             books_last_verse = length(BibleData.last_verse() |> Enum.at(found_book - 1))
 
             if !(start_chapter > 0 and books_last_verse >= start_chapter) do
@@ -535,18 +507,13 @@ defmodule BibleEx.Librarian do
         false ->
           false
       end
-
-
 
     verified
   end
 
   def verify_reference(book: book, start_chapter: start_chapter, start_verse: start_verse)
       when not is_nil(book) do
-
     verified = true
-
-
 
     found_book =
       case BibleEx.typeof(book) do
@@ -564,15 +531,12 @@ defmodule BibleEx.Librarian do
         verified
       end
 
-
-
     ## if book is not verified at this point, short-circuit
 
     verified =
       case verified do
         true ->
           if !is_nil(start_chapter) do
-
             books_last_verse = length(BibleData.last_verse() |> Enum.at(found_book - 1))
 
             if !(start_chapter > 0 and books_last_verse >= start_chapter) do
@@ -587,8 +551,6 @@ defmodule BibleEx.Librarian do
         false ->
           false
       end
-
-
 
     # book is not in bible
     verified =
@@ -618,17 +580,12 @@ defmodule BibleEx.Librarian do
         end
       end
 
-
-
     verified
   end
 
   def verify_reference(book: book, start_chapter: start_chapter, end_verse: end_verse)
       when not is_nil(book) do
-
     verified = true
-
-
 
     found_book =
       case BibleEx.typeof(book) do
@@ -646,15 +603,12 @@ defmodule BibleEx.Librarian do
         verified
       end
 
-
-
     ## if book is not verified at this point, short-circuit
 
     verified =
       case verified do
         true ->
           if !is_nil(start_chapter) do
-
             books_last_verse = length(BibleData.last_verse() |> Enum.at(found_book - 1))
 
             if !(start_chapter > 0 and books_last_verse >= start_chapter) do
@@ -670,42 +624,23 @@ defmodule BibleEx.Librarian do
           false
       end
 
-
-
     verified =
       case !is_nil(end_verse) do
         true ->
-
-
           very_last_verse =
             BibleData.last_verse()
             |> Enum.at(found_book - 1)
             |> Enum.at(start_chapter - 1)
 
-
-
-
           if end_verse <= 0 or very_last_verse < end_verse do
-
             false
           else
-
-            # verified
-            if is_nil(start_chapter) and is_nil(end_verse) do
-
-              false
-            else
-
-              verified
-            end
+            verified
           end
 
         false ->
-
           verified
       end
-
-
 
     verified
   end
@@ -729,11 +664,7 @@ defmodule BibleEx.Librarian do
         end_verse: end_verse
       )
       when not is_nil(book) do
-
-
     verified = true
-
-
 
     found_book =
       case BibleEx.typeof(book) do
@@ -778,8 +709,6 @@ defmodule BibleEx.Librarian do
           end
         end
 
-
-
         verified =
           case !is_nil(start_verse) do
             true ->
@@ -787,8 +716,6 @@ defmodule BibleEx.Librarian do
                 BibleData.last_verse()
                 |> Enum.at(found_book - 1)
                 |> Enum.at(start_chapter - 1)
-
-
 
               if !(start_verse > 0 and books_last_verse_books_start_chapter >= start_verse) do
                 false
@@ -825,63 +752,35 @@ defmodule BibleEx.Librarian do
               verified
           end
 
-
-
         verified =
           case !is_nil(end_verse) do
             true ->
+              if is_nil(end_chapter) do
+                false
+              else
+                very_last_verse =
+                  BibleData.last_verse()
+                  |> Enum.at(found_book - 1)
+                  |> Enum.at(end_chapter - 1)
 
-
-              case is_nil(end_chapter) do
-                true ->
-
-                  false
-
-                false ->
-
-
-                  very_last_verse =
-                    BibleData.last_verse()
-                    |> Enum.at(found_book - 1)
-                    |> Enum.at(end_chapter - 1)
-
-
-
-                  if end_verse > 0 and
-                       very_last_verse >= end_verse do
-
-                    verified
+                if end_verse > 0 and
+                     very_last_verse >= end_verse do
+                  verified
+                else
+                  if end_verse < start_verse do
+                    false
                   else
-
-                    # verified
-                    if is_nil(end_chapter) and is_nil(start_verse) do
-
-                      false
-                    else
-
-
-                      if end_verse < start_verse do
-
-                        false
-                      else
-
-                        verified
-                      end
-
-                      # verified
-                    end
+                    verified
                   end
+                end
               end
 
             false ->
-
               verified
           end
 
         verified
       end
-
-
 
     verified
   end
@@ -891,7 +790,6 @@ defmodule BibleEx.Librarian do
   end
 
   def create_reference_string(book: book, start_chapter: start_chapter) do
-
     reference = ""
 
     reference =
@@ -907,31 +805,22 @@ defmodule BibleEx.Librarian do
   end
 
   def create_reference_string(book: book, start_chapter: start_chapter, start_verse: start_verse) do
-
     reference = ""
 
     reference =
       case !is_nil(book) and !is_nil(start_chapter) do
         true ->
-
           reference = reference <> book <> " #{start_chapter}"
-
 
           case !is_nil(start_verse) do
             true ->
-
               reference <> ":#{start_verse}"
 
-
-
             false ->
-
               reference
-
           end
 
         false ->
-
           reference
       end
 
@@ -944,22 +833,18 @@ defmodule BibleEx.Librarian do
         start_verse: start_verse,
         end_chapter: end_chapter
       ) do
-
     reference = ""
 
     reference =
       case !is_nil(book) and !is_nil(start_chapter) do
         true ->
-
           reference = reference <> book <> " #{start_chapter}"
-
 
           if !is_nil(start_verse) and !is_nil(end_chapter) and end_chapter != start_chapter do
             # true ->
 
             reference = reference <> ":#{start_verse}"
             reference = reference <> " - #{end_chapter}"
-
 
             end_chapter_last_verse = get_last_verse_number(book: book, chapter: end_chapter)
 
@@ -974,21 +859,17 @@ defmodule BibleEx.Librarian do
           else
             reference =
               if !is_nil(end_chapter) and end_chapter != start_chapter do
-
                 reference = reference <> "-#{end_chapter}"
 
                 reference
               else
-
                 reference
               end
-
 
             reference
           end
 
         false ->
-
           reference
       end
 
@@ -1002,23 +883,18 @@ defmodule BibleEx.Librarian do
         end_chapter: end_chapter,
         end_verse: end_verse
       ) do
-
-
     reference = ""
 
     reference =
       case !is_nil(book) and !is_nil(start_chapter) do
         true ->
-
           reference = reference <> book <> " #{start_chapter}"
-
 
           if !is_nil(start_verse) and !is_nil(end_chapter) and end_chapter != start_chapter do
             # true ->
 
             reference = reference <> ":#{start_verse}"
             reference = reference <> " - #{end_chapter}"
-
 
             if !is_nil(end_verse) do
               reference = reference <> ":#{end_verse}"
@@ -1047,44 +923,31 @@ defmodule BibleEx.Librarian do
 
                   reference
                 else
-
                   reference
                 end
               end
 
             reference =
               if !is_nil(end_chapter) do
-
-
-
-
-
-
                 reference =
                   if is_nil(start_verse) and is_nil(end_verse) do
                     # when only rendering chapter range
 
-
                     # when it's the same chapter, do not show range
                     reference =
                       if start_chapter != end_chapter do
-
                         reference <> "-#{end_chapter}"
                       else
-
                         reference
                       end
-
 
                     reference
                   else
                     # when rendering chapter:verse - chapter:verse range
 
-
                     if start_chapter != end_chapter do
                       reference <> " - #{end_chapter}"
                     else
-
                       reference
                     end
 
@@ -1093,25 +956,15 @@ defmodule BibleEx.Librarian do
 
                 reference
               else
-
                 reference
               end
 
             reference =
               if !is_nil(end_verse) do
-
-
-
-
-
-
                 reference =
                   if !is_nil(start_verse) do
-
                     reference <> "-#{end_verse}"
                   else
-
-
                     if !is_nil(end_chapter) do
                       reference <> " - #{end_chapter}:#{end_verse}"
                     else
@@ -1119,35 +972,22 @@ defmodule BibleEx.Librarian do
                     end
                   end
 
-
                 # reference = reference <> ":1"
                 reference
               else
-
                 reference
               end
-
 
             reference
           end
 
         false ->
-
-
-
-
-
-
-
           reference =
             if is_nil(start_chapter) and is_nil(start_verse) do
-
               book
             else
-
               reference
             end
-
 
           reference
       end

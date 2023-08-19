@@ -80,11 +80,16 @@ defmodule BibleEx.Reference do
       ) do
     bname =
       case Librarian.get_book_names(book: book) do
-        nil ->
-          book
-
-        book_names ->
+        book_names = %{
+          osis: _osis,
+          abbr: _abbr,
+          name: _name,
+          short: _short
+        } ->
           Map.get(book_names, :name, book)
+
+        %{} ->
+          book
       end
 
     sc =
