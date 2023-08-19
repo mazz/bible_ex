@@ -158,14 +158,4 @@ defmodule BibleEx.ParserTest do
     no_ref = RefParser.parse_references("This contains nothing")
     assert length(no_ref) == 0
   end
-
-  # describe "parser_verifies_paratexts/1" do
-  #   test "parser_verifies_paratexts" do
-  #     refs = RefParser.parse_references("Mat Jam PSA joh")
-
-  #     Enum.each(refs, fn x ->
-  #       assert length(x.book) > 3
-  #     end)
-  #   end
-  # end
 end

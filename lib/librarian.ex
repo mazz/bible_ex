@@ -1,9 +1,12 @@
 defmodule BibleEx.Librarian do
+  @moduledoc false
+
   require Logger
   alias BibleEx.BibleData
 
-  # Returns the book number from a string.
-
+  @doc ~S"""
+    Returns the book number from a string.
+  """
   def find_book_number(book: book) do
     book_lower = String.downcase(book)
 

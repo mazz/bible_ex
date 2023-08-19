@@ -1,20 +1,11 @@
 defmodule BibleEx do
   @moduledoc """
-  Documentation for `BibleEx`.
+  An Elixir package that parses strings for Bible references. Parse single references or multiple references from a string into a variety of data structures.
   """
 
   @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> BibleEx.hello()
-      :world
-
+  Used internally by BibleEx.
   """
-  def hello do
-    :world
-  end
 
   def typeof(a) do
     cond do

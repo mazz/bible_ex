@@ -1,6 +1,8 @@
 ## Reference information used by the [Librarian]
 ## class to analyze potential references.
 defmodule BibleEx.BibleData do
+  @moduledoc false
+
   ## All full book names of the
   ## mapped to which number they
   ## are chronologically.
