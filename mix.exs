@@ -7,7 +7,10 @@ defmodule BibleEx.MixProject do
       version: "0.1.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      description: description(),
+      package: package(),
+      deps: deps(),
+      source_url: "https://github.com/mazz/bible_ex"
     ]
   end
 
@@ -21,8 +24,21 @@ defmodule BibleEx.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+      {:ex_doc, "~> 0.29.2", only: :dev, runtime: false},
+      {:earmark, "~> 1.4", only: :dev, runtime: false},
+      {:dialyxir, "~> 0.3", only: [:dev], runtime: false}
+    ]
+  end
+
+  defp description() do
+    "An Elixir package that parses strings for Bible references."
+  end
+
+  defp package() do
+    [
+      files: ~w(lib .formatter.exs mix.exs README* LICENSE*),
+      licenses: ["BSD-2-Clause"],
+      links: %{"GitHub" => "https://github.com/mazz/bible_ex"}
     ]
   end
 end
