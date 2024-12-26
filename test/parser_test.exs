@@ -158,4 +158,20 @@ defmodule BibleEx.ParserTest do
     no_ref = RefParser.parse_references("This contains nothing")
     assert length(no_ref) == 0
   end
+
+  test "parser_parses_COL" do
+    ref = RefParser.parse_references("COL")
+    assert length(ref) == 1
+    assert Enum.at(ref, 0).reference == "Colossians"
+    assert Enum.at(ref, 0).book == "Colossians"
+    assert Enum.at(ref, 0).is_valid == true
+  end
+
+  test "parser_parses_1TH" do
+    ref = RefParser.parse_references("1TH")
+    assert length(ref) == 1
+    assert Enum.at(ref, 0).reference == "1 Thessalonians"
+    assert Enum.at(ref, 0).book == "1 Thessalonians"
+    assert Enum.at(ref, 0).is_valid == true
+  end
 end
