@@ -1,6 +1,10 @@
 defmodule BibleEx.Reference do
   @moduledoc """
-  Is a general Bible reference struct.
+  Represents a normalized Bible reference.
+
+  A `%BibleEx.Reference{}` ties together book, chapter(s), verse(s), and
+  derived metadata such as OSIS code, abbreviation, and the list of
+  `BibleEx.Chapter` and `BibleEx.Verse` structs that make up the reference.
   """
 
   alias BibleEx.Librarian
@@ -29,171 +33,57 @@ defmodule BibleEx.Reference do
             abbr: nil,
             short: nil
 
-  @doc """
-  Make a new `%Reference{}` struct.
+  @doc ~S"""
+  Builds a new `%BibleEx.Reference{}` for a given book and optional range.
 
-  ## Parameters
+  The `book` parameter may be any recognized form for a book name:
 
-    - *book*: a string that is one of the four possible book name formats
-    - `"GEN"` (abbr)
-    - `"Genesis"` (name)
-    - `"Gen"` (osis)
-    - `"Gn"` (short)
-    - *start_chapter*: an integer that is the start chapter number
-    - *start_verse*: an integer that is the start verse number
-    - *end_chapter*: an integer that is the end chapter number
-    - *end_verse*: an integer that is the end verse number
+    * Full name: `"Genesis"`
+    * OSIS code: `"Gen"`
+    * Paratext abbreviation: `"GEN"`
+    * Short form: `"Gn"`
+
+  Missing chapter or verse boundaries are filled in using `BibleEx.Librarian`,
+  defaulting to the full book, chapter, or verse range as appropriate.
 
   ## Examples
-      iex> alias BibleEx.Reference
-      iex> genesis_ref = Reference.new(book: "Genesis", start_chapter: 2, start_verse: 3, end_chapter: 4, end_verse: 5)
-
-      %BibleEx.Reference{
-        book: "Genesis",
-        book_names: %{abbr: "GEN", name: "Genesis", osis: "Gen", short: "Gn"},
-        book_number: 1,
-        reference: "Genesis 2:3 - 4:5",
-        reference_type: :chapter_range,
-        start_chapter: %BibleEx.Chapter{
-          ...
-        }
-      }
 
       iex> alias BibleEx.Reference
-      iex> Reference.new(book: "3 John")
+      iex> ref = Reference.new(book: "Genesis", start_chapter: 2, start_verse: 3, end_chapter: 4, end_verse: 5)
+      iex> ref.book
+      "Genesis"
+      iex> {ref.start_chapter_number, ref.start_verse_number, ref.end_chapter_number, ref.end_verse_number}
+      {2, 3, 4, 5}
+      iex> ref.reference_type in [:chapter_range, :verse_range]
+      true
 
-      %BibleEx.Reference{
-        book: "3 John",
-        book_names: %{abbr: "3JO", name: "3 John", osis: "3John", short: "3 Jn"},
-        book_number: 64,
-        reference: "3 John",
-        reference_type: :chapter,
-        start_chapter: %BibleEx.Chapter{
-          book: "3 John",
-          book_names: %{abbr: "3JO", name: "3 John", osis: "3John", short: "3 Jn"},
-          reference_type: :chapter,
-          reference: "3 John 1",
-          chapter_number: 1,
-          start_verse_number: 1,
-          start_verse: %BibleEx.Verse{
-            book: "3 John",
-            book_names: %{abbr: "3JO", name: "3 John", osis: "3John", short: "3 Jn"},
-            book_number: 64,
-            reference_type: :verse,
-            reference: "3 John 1:1",
-            chapter_number: 1,
-            verse_number: 1,
-            is_valid: true
-          },
-          end_verse: %BibleEx.Verse{
-            book: "3 John",
-            book_names: %{abbr: "3JO", name: "3 John", osis: "3John", short: "3 Jn"},
-            book_number: 64,
-            reference_type: :verse,
-            reference: "3 John 1:15",
-            chapter_number: 1,
-            verse_number: 15,
-            is_valid: true
-          },
-          end_verse_number: 15,
-          verses: [
-            ...
-          ],
-          is_valid: true
-        },
-        start_chapter_number: 1,
-        start_verse: %BibleEx.Verse{
-          book: "3 John",
-          book_names: %{abbr: "3JO", name: "3 John", osis: "3John", short: "3 Jn"},
-          book_number: 64,
-          reference_type: :verse,
-          reference: "3 John 1:1",
-          chapter_number: 1,
-          verse_number: 1,
-          is_valid: true
-        },
-        start_verse_number: 1,
-        end_chapter: %BibleEx.Chapter{
-          book: "3 John",
-          book_names: %{abbr: "3JO", name: "3 John", osis: "3John", short: "3 Jn"},
-          reference_type: :chapter,
-          reference: nil,
-          chapter_number: nil,
-          start_verse_number: 1,
-          start_verse: %BibleEx.Verse{
-            book: "3 John",
-            book_names: %{abbr: "3JO", name: "3 John", osis: "3John", short: "3 Jn"},
-            book_number: 64,
-            reference_type: :verse,
-            reference: nil,
-            chapter_number: nil,
-            verse_number: 1,
-            is_valid: false
-          },
-          end_verse: %BibleEx.Verse{
-            book: "3 John",
-            book_names: %{abbr: "3JO", name: "3 John", osis: "3John", short: "3 Jn"},
-            book_number: 64,
-            reference_type: :verse,
-            reference: "3 John 1:15",
-            chapter_number: 1,
-            verse_number: 15,
-            is_valid: true
-          },
-          end_verse_number: 15,
-          verses: nil,
-          is_valid: true
-        },
-        end_chapter_number: 1,
-        end_verse: 15,
-        end_verse_number: 15,
-        is_valid: true,
-        chapters: [
-          %BibleEx.Chapter{
-            book: "3 John",
-            book_names: %{abbr: "3JO", name: "3 John", osis: "3John", short: "3 Jn"},
-            reference_type: :chapter,
-            reference: "3 John 1",
-            chapter_number: 1,
-            start_verse_number: 1,
-            start_verse: %BibleEx.Verse{
-              book: "3 John",
-              book_names: %{abbr: "3JO", name: "3 John", osis: "3John", short: "3 Jn"},
-              book_number: 64,
-              reference_type: :verse,
-              reference: "3 John 1:1",
-              chapter_number: 1,
-              verse_number: 1,
-              is_valid: true
-            },
-            end_verse: %BibleEx.Verse{
-              book: "3 John",
-              book_names: %{abbr: "3JO", name: "3 John", osis: "3John", short: "3 Jn"},
-              book_number: 64,
-              reference_type: :verse,
-              reference: "3 John 1:15",
-              chapter_number: 1,
-              verse_number: 15,
-              is_valid: true
-            },
-            end_verse_number: 15,
-            verses: [
-              ...
-            ],
-            is_valid: true
-          }
-        ],
-        verses: [
-          ...
-        ]
-      }
+      iex> alias BibleEx.Reference
+      iex> ref = Reference.new(book: "3 John")
+      iex> ref.book
+      "3 John"
+      iex> {ref.start_chapter_number, ref.start_verse_number}
+      {1, 1}
+      iex> ref.is_valid
+      true
 
   """
-
   def new(book: book) do
     new(book: book, start_chapter: nil, start_verse: nil, end_chapter: nil, end_verse: nil)
   end
 
+  @doc ~S"""
+  Builds a `%BibleEx.Reference{}` for a book starting at a given chapter.
+
+  This is a convenience wrapper for `new/1` when only `start_chapter` is known.
+
+  ## Examples
+
+      iex> alias BibleEx.Reference
+      iex> ref = Reference.new(book: "Genesis", start_chapter: 1)
+      iex> {ref.book, ref.start_chapter_number, ref.start_verse_number}
+      {"Genesis", 1, 1}
+
+  """
   def new(
         book: book,
         start_chapter: start_chapter
@@ -207,6 +97,20 @@ defmodule BibleEx.Reference do
     )
   end
 
+  @doc ~S"""
+  Builds a `%BibleEx.Reference{}` for a single starting verse.
+
+  This is a convenience wrapper for `new/1` when `book`, `start_chapter`
+  and `start_verse` are known but no end boundary is supplied.
+
+  ## Examples
+
+      iex> alias BibleEx.Reference
+      iex> ref = Reference.new(book: "Gen", start_chapter: 1, start_verse: 1)
+      iex> ref.reference
+      "Genesis 1:1"
+
+  """
   def new(
         book: book,
         start_chapter: start_chapter,
@@ -221,6 +125,20 @@ defmodule BibleEx.Reference do
     )
   end
 
+  @doc ~S"""
+  Builds a `%BibleEx.Reference{}` for a cross-chapter range without an end verse.
+
+  This form is used when the start verse is known but the range ends at the
+  end of `end_chapter`.
+
+  ## Examples
+
+      iex> alias BibleEx.Reference
+      iex> ref = Reference.new(book: "John", start_chapter: 3, start_verse: 16, end_chapter: 4)
+      iex> {ref.start_chapter_number, ref.start_verse_number, ref.end_chapter_number}
+      {3, 16, 4}
+
+  """
   def new(
         book: book,
         start_chapter: start_chapter,
@@ -236,6 +154,30 @@ defmodule BibleEx.Reference do
     )
   end
 
+  @doc ~S"""
+  Builds the most general `%BibleEx.Reference{}` with optional start and end.
+
+  This function:
+
+    * Normalizes the book name using `BibleEx.Librarian.get_book_names/1`.
+    * Computes default start and end chapters/verses when omitted.
+    * Loads `BibleEx.Chapter` and `BibleEx.Verse` structs for the range.
+    * Sets `reference`, `reference_type`, and `is_valid` using `BibleEx.Librarian`.
+
+  Prefer calling the convenience helpers (`chapter/2`, `verse/3`,
+  `chapter_range/3`, `verse_range/4`) instead of this function directly
+  in most application code.
+
+  ## Examples
+
+      iex> alias BibleEx.Reference
+      iex> ref = Reference.new(book: "Romans", start_chapter: 8, start_verse: 28, end_chapter: 8, end_verse: 30)
+      iex> ref.reference
+      "Romans 8:28-30"
+      iex> ref.is_valid
+      true
+
+  """
   def new(
         book: book,
         start_chapter: start_chapter,
@@ -342,7 +284,6 @@ defmodule BibleEx.Reference do
 
     verse_collection =
       Enum.map(chapter_list, fn x ->
-        # if svn is nil then choose 1, else choose svn
         find_start_verse =
           if !is_nil(svn) and x == Enum.at(chapter_list, 0) do
             svn
@@ -350,7 +291,6 @@ defmodule BibleEx.Reference do
             1
           end
 
-        # if evn is nil then choose last verse, else choose evn
         find_last_verse =
           if !is_nil(evn) and x == List.last(chapter_list) do
             evn
@@ -367,9 +307,9 @@ defmodule BibleEx.Reference do
       end)
 
     book_names = Librarian.get_book_names(book: bname)
-    osis_book = Map.get(Librarian.get_book_names(book: bname), :osis, nil)
-    abbr_book = Map.get(Librarian.get_book_names(book: bname), :abbr, nil)
-    short_book = Map.get(Librarian.get_book_names(book: bname), :short, nil)
+    osis_book = Map.get(book_names, :osis, nil)
+    abbr_book = Map.get(book_names, :abbr, nil)
+    short_book = Map.get(book_names, :short, nil)
 
     %__MODULE__{
       book: bname,
@@ -415,102 +355,55 @@ defmodule BibleEx.Reference do
     }
   end
 
-  @doc """
-  Make a chapter `%Reference{}` struct.
-
-  ## Parameters
-
-    - *book*: a string that is one of the four possible book name formats
-    - `"GEN"` (abbr)
-    - `"Genesis"` (name)
-    - `"Gen"` (osis)
-    - `"Gn"` (short)
-    - *chapter*: an integer that is the chapter number
+  @doc ~S"""
+  Builds a `%BibleEx.Reference{}` for a whole chapter.
 
   ## Examples
+
       iex> alias BibleEx.Reference
-      iex> genesis_ref = Reference.chapter(book: "Genesis", chapter: 1)
+      iex> ref = Reference.chapter(book: "Genesis", chapter: 1)
+      iex> {ref.book, ref.reference_type}
+      {"Genesis", :chapter}
+      iex> ref.reference
+      "Genesis 1"
 
-      %BibleEx.Reference{
-        book: "Genesis",
-        book_names: %{abbr: "GEN", name: "Genesis", osis: "Gen", short: "Gn"},
-        book_number: 1,
-        reference: "Genesis 1",
-        reference_type: :chapter,
-        start_chapter: %BibleEx.Chapter{
-        ...
-        }
-      }
   """
-
   def chapter(book: book, chapter: chapter) do
     new(book: book, start_chapter: chapter)
   end
 
-  @doc """
-  Make a verse `%Reference{}` struct.
-
-  ## Parameters
-
-    - *book*: a string that is one of the four possible book name formats
-    - `"GEN"` (abbr)
-    - `"Genesis"` (name)
-    - `"Gen"` (osis)
-    - `"Gn"` (short)
-    - *chapter*: an integer that is the chapter number
-    - *verse*: an integer that is the verse number
+  @doc ~S"""
+  Builds a `%BibleEx.Reference{}` for a single verse.
 
   ## Examples
+
       iex> alias BibleEx.Reference
-      iex> gen_11 = Reference.verse(book: "Genesis", chapter: 1, verse: 1)
+      iex> ref = Reference.verse(book: "Genesis", chapter: 1, verse: 1)
+      iex> {ref.book, ref.reference_type}
+      {"Genesis", :verse}
+      iex> ref.reference
+      "Genesis 1:1"
 
-      %BibleEx.Reference{
-        book: "Genesis",
-        book_names: %{abbr: "GEN", name: "Genesis", osis: "Gen", short: "Gn"},
-        book_number: 1,
-        reference: "Genesis 1:1",
-        reference_type: :verse,
-        start_chapter: %BibleEx.Chapter{
-          ...
-        }
-        ...
-      }
   """
-
   def verse(book: book, chapter: chapter, verse: verse) do
     new(book: book, start_chapter: chapter, start_verse: verse)
   end
 
-  @doc """
-  Make a chapter_range `%Reference{}` struct.
+  @doc ~S"""
+  Builds a `%BibleEx.Reference{}` for a chapter range.
 
-  ## Parameters
-
-    - *book*: a string that is one of the four possible book name formats
-    - `"GEN"` (abbr)
-    - `"Genesis"` (name)
-    - `"Gen"` (osis)
-    - `"Gn"` (short)
-    - *start_chapter*: an integer that is the chapter number
-    - *end_chapter*: an integer that is the chapter number
+  The range spans from `start_chapter` to `end_chapter`, inclusive.
 
   ## Examples
+
       iex> alias BibleEx.Reference
-      iex> gen_1_to_2 = Reference.verse(book: "Genesis", start_chapter: 1, end_chapter: 2)
+      iex> ref = Reference.chapter_range(book: "Genesis", start_chapter: 1, end_chapter: 2)
+      iex> ref.reference
+      "Genesis 1-2"
+      iex> ref.reference_type
+      :chapter_range
 
-      %BibleEx.Reference{
-        book: "Genesis",
-        book_names: %{abbr: "GEN", name: "Genesis", osis: "Gen", short: "Gn"},
-        book_number: 1,
-        reference: "Genesis 1-2",
-        reference_type: :chapter_range,
-        start_chapter: %BibleEx.Chapter{
-          ...
-        }
-        ...
-      }
   """
-
   def chapter_range(book: book, start_chapter: start_chapter, end_chapter: end_chapter) do
     new(
       book: book,
@@ -521,36 +414,21 @@ defmodule BibleEx.Reference do
     )
   end
 
-  @doc """
-  Make a verse_range `%Reference{}` struct.
-
-  ## Parameters
-
-    - *book*: a string that is one of the four possible book name formats
-    - `"GEN"` (abbr)
-    - `"Genesis"` (name)
-    - `"Gen"` (osis)
-    - `"Gn"` (short)
-    - *start_verse*: an integer that is the start verse number
-    - *end_verse*: an integer that is the end verse number
+  @doc ~S"""
+  Builds a `%BibleEx.Reference{}` for a verse range within a chapter.
 
   ## Examples
+
       iex> alias BibleEx.Reference
-      iex> matt2410 = Reference.verse_range(book: "Mat", chapter: 2, start_verse: 4, end_verse: 10)
+      iex> ref = Reference.verse_range(book: "Matt", chapter: 2, start_verse: 4, end_verse: 10)
+      iex> ref.book
+      "Matthew"
+      iex> {ref.start_verse_number, ref.end_verse_number}
+      {4, 10}
+      iex> ref.reference_type
+      :verse_range
 
-      %BibleEx.Reference{
-        book: "Matthew",
-        book_names: %{abbr: "MAT", name: "Matthew", osis: "Matt", short: "Mt"},
-        book_number: 40,
-        reference: "Matthew 2:4-10",
-        reference_type: :verse_range,
-        start_chapter: %BibleEx.Chapter{
-          ...
-        }
-        ...
-      }
   """
-
   def verse_range(book: book, chapter: chapter, start_verse: start_verse, end_verse: end_verse) do
     new(
       book: book,

@@ -1,85 +1,85 @@
 defmodule BibleEx.RefParser do
   @moduledoc """
-  Parses any general string for Bible references.
+  Parses general strings for Bible references.
+
+  This module scans arbitrary text for Bible references in a variety of
+  formats (full book names, abbreviations, ranges, etc.) and returns
+  `%BibleEx.Reference{}` structs.
   """
+
   alias BibleEx.BibleData
   alias BibleEx.Reference
 
   @doc ~S"""
-  use the parse_references() function to retrieve all the Bible references found in a string.
+  Parses a binary for all Bible references and returns a list of `%BibleEx.Reference{}`.
+
+  The parser supports:
+
+    * Full book names with chapter and verse.
+    * Common abbreviations and variants (e.g. `Matt`, `Jn`, `1 Tim`).
+    * Same-chapter verse ranges (e.g. `John 3:16-18`).
+    * Cross-chapter ranges (e.g. `John 3:16-4:3`).
+    * Dot separators with optional spaces (e.g. `James 1 . 2 -  2 . 4`).
+    * Bare book names (e.g. `Isaiah`, `1 Timothy`) which are normalized by `BibleEx.Reference`.
 
   ## Examples
+
       iex> alias BibleEx.RefParser
-      iex> RefParser.parse_references("John 3:16")
+      iex> [ref] = RefParser.parse_references("John 3:16")
+      iex> ref.book
+      "John"
+      iex> ref.start_chapter
+      3
+      iex> ref.start_verse
+      16
 
-      [
-        %BibleEx.Reference{
-          book: "John",
-          book_names: %{abbr: "JOH", name: "John", osis: "John", short: "Jn"},
-          book_number: 43,
-          reference: "John 3:16",
-          reference_type: :verse,
-          ...
-        }
-      ]
+      iex> refs = RefParser.parse_references("Matt 2:4 and James 5:1-5")
+      iex> Enum.map(refs, & &1.book)
+      ["Matthew", "James"]
+      iex> Enum.map(refs, & &1.reference_type) |> Enum.sort()
+      [:verse, :verse_range]
 
-      iex> RefParser.parse_references("I hope Matt 2:4 and James 5:1-5 get parsed")
+      iex> [ref] = RefParser.parse_references("James 1 . 2 -  2 . 4")
+      iex> ref.book
+      "James"
+      iex> {ref.start_chapter, ref.start_verse, ref.end_chapter, ref.end_verse}
+      {1, 2, 2, 4}
 
-      [
-        %BibleEx.Reference{
-          book: "Matthew",
-          book_names: %{abbr: "MAT", name: "Matthew", osis: "Matt", short: "Mt"},
-          book_number: 40,
-          reference: "Matthew 2:4",
-          reference_type: :verse,
-          ...
-        },
-        %BibleEx.Reference{
-          book: "James",
-          book_names: %{abbr: "JAM", name: "James", osis: "Jas", short: "Jas"},
-          book_number: 59,
-          reference: "James 5:1-5",
-          reference_type: :verse_range,
-          ...
-        }
-      ]
+      iex> [ref] = RefParser.parse_references("is. 1 Timothy 6, 1.")
+      iex> ref.book
+      "1 Timothy"
+      iex> {ref.start_chapter, ref.start_verse}
+      {6, 1}
 
-      iex> RefParser.parse_references("This sentence contains two references. One that spans chapters, John 3:16-4:3, found in the book of John, and another one in the same book.")
-
-      [
-        %BibleEx.Reference{
-          book: "John",
-          book_names: %{abbr: "JOH", name: "John", osis: "John", short: "Jn"},
-          book_number: 43,
-          reference: "John 3:16 - 4:3",
-          reference_type: :chapter_range,
-          ...
-        },
-        %BibleEx.Reference{
-          book: "John",
-          book_names: %{abbr: "JOH", name: "John", osis: "John", short: "Jn"},
-          book_number: 43,
-          reference: "John",
-          reference_type: :chapter_range,
-          ...
-        }
-      ]
   """
 
   def parse_references(string) when is_binary(string) do
+    # Run the full regex over the input string, collecting all raw matches.
+    # Each element is a list: [full_match, book, maybe_chapter, maybe_verse, ...].
     books_matched =
       Regex.scan(full_regex(), string)
-      |> Enum.map(fn x ->
-        x
+      # Drop anything whose first captured token is not a known book key.
+      |> Enum.reject(fn [full, book | _] ->
+        norm = String.downcase(String.trim(book))
+
+        not (
+          Map.has_key?(BibleEx.BibleData.books(), norm) or
+          Map.has_key?(BibleEx.BibleData.osis_books(), norm) or
+          Map.has_key?(BibleEx.BibleData.shortened_books(), norm) or
+          Map.has_key?(BibleEx.BibleData.variants(), norm)
+        )
       end)
 
+    # Turn each raw regex match into a %BibleEx.Reference{}.
     Enum.map(books_matched, fn x ->
       cond do
-        # book name only i.e. ["genesis ", "genesis"]
+        # Case 1: book-only reference, e.g. ["is", "is"] or ["Matthew", "Matthew"].
+        # Delegate to Reference.new/1 so it can normalize book names and defaults.
         length(x) == 2 and String.trim(Enum.at(x, 0)) == Enum.at(x, 1) ->
-          Reference.new(book: String.trim(Enum.at(x, 0)))
+          book_name = String.trim(Enum.at(x, 0))
+          Reference.new(book: book_name)
 
-        # book with chapter only i.e. ["Judges 19", "Judges", "19"]
+        # Case 2: book + chapter, no verse, e.g. ["Judges 19", "Judges", "19"].
         length(x) == 3 ->
           Reference.new(
             book: String.trim(Enum.at(x, 1)),
@@ -89,13 +89,8 @@ defmodule BibleEx.RefParser do
             end_verse: nil
           )
 
-        # book with chapter and verse i.e. ["Jn 3:16", "Jn", "3", "16"]
-        # also covers chapter-only edge case where user enters `James 1 - 2` i.e. ["James 1 - 2", "James", "1", "2"]
-
-        # NOTE: in elixir `James 1 - 2` generates ["james 1 - 2", "james", "1", "", "2"]
-
+        # Case 3: book + chapter:verse, e.g. ["Jn 3:16", "Jn", "3", "16"].
         length(x) == 4 ->
-          # book with chapter and verse i.e. ["Jn 3:16", "Jn", "3", "16"]
           Reference.new(
             book: String.trim(Enum.at(x, 1)),
             start_chapter: String.to_integer(Enum.at(x, 2)),
@@ -104,16 +99,13 @@ defmodule BibleEx.RefParser do
             end_verse: nil
           )
 
-        # John 4:5-10
-        # iOS     ["John 4:5-10", "John", "4", "5", "10"]
-        # elixir  ["John 4:5-10", "John", "4", "5", "10"]
-
+        # Case 4: five captures – could be a verse range, dotted form, or chapter range.
         length(x) == 5 ->
+          # Full matched text, used to distinguish ":" vs "." vs "-" semantics.
           ref = String.trim(Enum.at(x, 0))
-          # chapter-only reference -- also covers `em-dash` case
-          # # NOTE: in elixir `James 1 - 2` generates ["james 1 - 2", "james", "1", "", "2"]
 
           cond do
+            # Example: "John 4:5-10" → same-chapter verse range.
             String.contains?(ref, ":") ->
               Reference.new(
                 book: String.trim(Enum.at(x, 1)),
@@ -123,9 +115,8 @@ defmodule BibleEx.RefParser do
                 end_verse: String.to_integer(Enum.at(x, 4))
               )
 
+            # Example: "James 1.2 -  2" → dotted start verse only.
             String.contains?(ref, ".") ->
-              # ["James 1.2 -  2", "James", "1", "2", "2"]
-
               Reference.new(
                 book: String.trim(Enum.at(x, 1)),
                 start_chapter: String.to_integer(Enum.at(x, 2)),
@@ -134,6 +125,7 @@ defmodule BibleEx.RefParser do
                 end_verse: nil
               )
 
+            # Example: "James 1 - 2" or "James 1 — 2" → chapter range with no verses.
             String.contains?(ref, "-") or String.contains?(ref, "—") ->
               Reference.new(
                 book: String.trim(Enum.at(x, 1)),
@@ -143,9 +135,8 @@ defmodule BibleEx.RefParser do
                 end_verse: nil
               )
 
+            # Fallback: treat as start + end verse within the same chapter.
             true ->
-              # should never get here?
-
               Reference.new(
                 book: String.trim(Enum.at(x, 1)),
                 start_chapter: String.to_integer(Enum.at(x, 2)),
@@ -155,9 +146,8 @@ defmodule BibleEx.RefParser do
               )
           end
 
+        # Case 5: six captures – cross-chapter range, e.g. ["John 3:16-4:3", "John", "3", "16", "4", "3"].
         length(x) == 6 ->
-          # A reference that spans multiple chapters. i.e. ["John 3:16-4:3", "John", "3", "16", "4", "3"]
-
           Reference.new(
             book: String.trim(Enum.at(x, 1)),
             start_chapter: String.to_integer(Enum.at(x, 2)),
@@ -166,6 +156,7 @@ defmodule BibleEx.RefParser do
             end_verse: String.to_integer(Enum.at(x, 5))
           )
 
+        # Anything that does not match the expected shapes is ignored.
         true ->
           nil
       end
@@ -173,23 +164,63 @@ defmodule BibleEx.RefParser do
   end
 
   defp full_regex() do
-    all_book_names =
-      Enum.map(BibleData.book_names(), fn x ->
-        x
-      end)
-      |> List.flatten()
+    # Collect all canonical book keys from the different BibleData maps.
+    # These are the tokens that will be recognized as book names in the regex.
+    canonical_book_keys = Map.keys(BibleEx.BibleData.books())
+    osis_keys           = Map.keys(BibleEx.BibleData.osis_books())
+    shortened_keys      = Map.keys(BibleEx.BibleData.shortened_books())
+    variant_keys        = Map.keys(BibleEx.BibleData.variants())
 
-    variants = Map.keys(BibleData.variants())
+    # Merge all keys into a single list of searchable tokens:
+    #   * downcased so matching is case-insensitive at the pattern level,
+    #   * deduplicated,
+    #   * sorted longest-first so multi-word / longer tokens win before prefixes.
+    all_searchable =
+      (canonical_book_keys ++ osis_keys ++ shortened_keys ++ variant_keys)
+      |> Enum.map(&String.downcase/1)
+      |> Enum.uniq()
+      |> Enum.sort_by(&String.length/1, :desc)
 
-    all_searchable = all_book_names ++ variants
+    # Turn the list of book tokens into a single alternation group:
+    #   "genesis|gen|gn|..." – with each token regex-escaped for safety.
+    book_alternation =
+      all_searchable
+      |> Enum.map(&Regex.escape/1)
+      |> Enum.join("|")
 
-    reg_books = Enum.join(all_searchable, "\\b|\\b")
+    # Main reference-matching pattern:
+    #   1. Match a book token with safe left/right boundaries.
+    #   2. Optionally match chapter and verse.
+    #   3. Optionally match a range (same chapter or cross-chapter).
+    pattern = """
+    (?<![A-Za-z0-9])          # left boundary: do not allow letters/digits before the book
+    (#{book_alternation})     # 1: book token (any of the known keys)
+    (?![A-Za-z])              # right boundary: next char cannot be a letter (avoid 'Jos' in 'Joseph')
+    \\s*                      # optional whitespace after book
 
-    {:ok, regex} =
-      Regex.compile("(\\b#{reg_books}\\b) *(\\d+)?[ :.]*(\\d+)?[— -]*(\\d+)?[ :.]*(\\d+)?", [
-        :caseless
-      ])
+    (?:
+      (\\d+)                  # 2: optional chapter number (e.g. '3' in 'John 3:16')
+      (?:\\s*[.:]\\s*(\\d+))? # 3: optional verse number with ':' or '.' (e.g. '16' in '3:16' or '3 . 16')
 
+      (?:
+        \\s*[—-]\\s*          # optional range separator: dash or em dash, with optional surrounding spaces
+
+        (?:
+          (\\d+)              # 4: end chapter (for cross-chapter ranges, e.g. '4' in '3:16-4:3')
+          (?:\\s*[.:]\\s*(\\d+))? # 5: optional end verse after end chapter (e.g. '3' in '4:3')
+          |                   # OR
+
+          (\\d+)              # 6: end verse within the same chapter (e.g. '18' in '3:16-18')
+        )
+      )?
+    )?                        # entire chapter/verse/range part is optional (supports book-only matches)
+    """
+
+    # Compile the pattern with:
+    #   x – extended mode (whitespace/comments allowed),
+    #   i – case-insensitive,
+    #   u – Unicode mode.
+    {:ok, regex} = Regex.compile(pattern, "xiu")
     regex
   end
 end
