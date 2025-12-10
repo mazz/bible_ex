@@ -1,11 +1,22 @@
-## Reference information used by the [Librarian]
-## class to analyze potential references.
 defmodule BibleEx.BibleData do
-  @moduledoc false
+  @moduledoc """
+  Static Bible metadata used by `BibleEx.Librarian` and other helpers.
 
-  ## All full book names of the
-  ## mapped to which number they
-  ## are chronologically.
+  This module exposes pure data functions that describe the structure of the
+  Protestant Bible:
+
+    * `books/0` – full lowercase book names mapped to their canonical number (1–66).
+    * `osis_books/0` – OSIS identifiers mapped to book numbers.
+    * `shortened_books/0` – short forms and liturgical abbreviations mapped to book numbers.
+    * `variants/0` – additional informal or alternate book keys mapped to book numbers.
+    * `book_names/0` – ordered list of name variants (OSIS, abbreviation, full name, short) by book number.
+    * `last_verse/0` – two-dimensional list of last verse numbers per chapter, per book.
+
+  All functions are deterministic and side-effect free; they simply return
+  in-memory maps or lists that other modules use for parsing and validating
+  references.
+  """
+
   def books() do
     %{
       "genesis" => 1,
