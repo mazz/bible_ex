@@ -20,7 +20,7 @@ defmodule BibleEx.RefParser do
       end)
 
     # If you want to be absolutely sure Joseph is gone:
-    IO.inspect(books_matched, label: "books_matched")
+    # IO.inspect(books_matched, label: "books_matched")
 
     Enum.map(books_matched, fn x ->
       cond do
