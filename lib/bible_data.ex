@@ -264,6 +264,8 @@ defmodule BibleEx.BibleData do
       "2th" => 53,
       "1ti" => 54,
       "2ti" => 55,
+      "1 tim" => 54,
+      "2 tim" => 55,
       "tit" => 56,
       "phm" => 57,
       "jam" => 59,
